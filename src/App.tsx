@@ -2,34 +2,32 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Sidebar from './components/sidebar'
+import { ChakraProvider, Flex } from '@chakra-ui/react'
+import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import BookList from './pages/Booklist'
+import Playlist from './pages/Playlist'
+import Subscriber from './pages/Subscriber'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <ChakraProvider>
+      <BrowserRouter>
+        <Flex>
+          <Sidebar />
+          <Flex flex="1" p="20px"> {/* Content container */}
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/books" element={<BookList />} />
+              <Route path="/playlists" element={<Playlist />} />
+              <Route path="/subscribers" element={<Subscriber />} />
+            </Routes>
+          </Flex>
+        </Flex>
+      </BrowserRouter>
+    </ChakraProvider>
   )
 }
 
-export default App
+export default App;
