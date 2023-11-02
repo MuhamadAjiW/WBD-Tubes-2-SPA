@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Sidebar from './components/sidebar'
+import Sidebar from './components/Sidebar'
 import { ChakraProvider, Flex } from '@chakra-ui/react'
 import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
 import Home from './pages/Home'
@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Flex>
           <Sidebar />
-          <Flex flex="1" p="20px"> {/* Content container */}
+          <Flex flex="1" p="20px" marginLeft="1rem"> {/* Content container */}
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/books" element={<BookList />} />
