@@ -23,7 +23,7 @@ import {
     background,
   } from '@chakra-ui/react'
 
-  import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from 'framer-motion';
 
 const Subscriber = () => {
@@ -65,6 +65,37 @@ const Subscriber = () => {
         setIsDeleteModalOpen(false)
     }
 
+    const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
+
+    // Function to open pending request modal
+    const openSubscribeModal = () => {
+        setIsSubscribeModalOpen(true);
+    }
+
+    // Function to close pending request modal
+    const closeSubscribeModal = () => {
+        setIsSubscribeModalOpen(false)
+    }
+
+    const subscribeDummyData = [
+        {
+            username: "user6"
+        },
+        {
+            username: "user7"
+        },
+        {
+            username: "user8"
+        },
+        {
+            username: "user9"
+        },
+        {
+            username: "user10"
+        }
+    ]
+    
+
     return (
         <>
             <Flex
@@ -85,7 +116,7 @@ const Subscriber = () => {
                         _hover={{backgroundColor:"black", color: "white"}}
                         mr={2}
                         onClick={() => {
-                            // Handle the add action
+                            openSubscribeModal();
                         }}
                     >Pending Request
                     </Button>
@@ -110,15 +141,6 @@ const Subscriber = () => {
                                         <Td textAlign="center" verticalAlign="middle">{item.email}</Td>
                                         <Td textAlign="center" verticalAlign="middle">
                                             <IconButton
-                                                icon={<EditIcon />}
-                                                variant="outline"
-                                                colorScheme="teal"
-                                                mr={2}
-                                                onClick={() => {
-                                                // Handle the edit action
-                                                }}
-                                            />
-                                            <IconButton
                                                 icon={<DeleteIcon />}
                                                 variant="outline"
                                                 colorScheme="red"
@@ -136,12 +158,13 @@ const Subscriber = () => {
                 </TableContainer>
             </Flex>
 
-            
-            <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered>
+            <Modal 
+            // This is delete modal
+            isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader textAlign="center" verticalAlign="middle">Remove Subscriber</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody textAlign="center" verticalAlign="middle">
                         Are you sure you want to remove this user from your subscriber list?
                     </ModalBody>
@@ -156,6 +179,41 @@ const Subscriber = () => {
                         </Flex>
                     </ModalFooter>
                 </ModalContent>
+            </Modal>
+
+            <Modal
+            // This is pending request modal
+            isOpen={isSubscribeModalOpen} onClose={closeSubscribeModal} isCentered
+            scrollBehavior='inside'>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader textAlign="center" verticalAlign="middle">Subscribe Requests</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody textAlign="center" verticalAlign="middle">
+                        <Table variant="simple" w="100%">
+                            <Thead>
+                                <Tr>
+                                    <Th textAlign="center" verticalAlign="middle">Username</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Action</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {
+                                    subscribeDummyData.map((item) => (
+                                        <Tr key={item.username}>
+                                            <Td textAlign="center" verticalAlign="middle">{item.username}</Td>
+                                            <Td textAlign="center" verticalAlign="middle" >
+                                                <Button onClick={closeSubscribeModal} style={{color: "white"}} backgroundColor="blue.500" ml={3} w="30%">Confirm</Button>
+                                                <Button onClick={closeSubscribeModal} style={{color: "white"}} backgroundColor="red.400" w="30%" marginLeft="10px">Delete</Button>
+                                            </Td>
+                                        </Tr>
+                                    )) 
+                                }
+                            </Tbody>
+                        </Table>
+                    </ModalBody>
+                </ModalContent>
+
             </Modal>
         </>
     )

@@ -20,6 +20,11 @@ import {
     ModalBody,
     Button,
     ModalFooter,
+    FormLabel,
+    Input,
+    InputGroup,
+    FormControl,
+    Textarea,
   } from '@chakra-ui/react'
 
   import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
@@ -74,12 +79,25 @@ const BookList = () => {
         setIsDeleteModalOpen(false)
     }
 
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    // Function to open delete modal
+    const openAddModal = () => {
+        setIsAddModalOpen(true);
+    }
+
+    // Function to close delete modal
+    const closeAddModal = () => {
+        setIsAddModalOpen(false)
+    }
+
     return (
         <>
             <Flex
             flexDir="column"
             justifyContent="flex-start"
             alignItems="center"
+            w="100%"
             >
                 <Flex
                 flexDir="row"
@@ -94,7 +112,7 @@ const BookList = () => {
                         colorScheme="green"
                         mr={2}
                         onClick={() => {
-                        // Handle the delete action
+                            openAddModal();
                         }}
                     />
                 </Flex>
@@ -149,7 +167,9 @@ const BookList = () => {
             </Flex>
 
             
-            <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered>
+            <Modal 
+            // This is delete modal
+            isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered >
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader textAlign="center" verticalAlign="middle">Delete Book</ModalHeader>
@@ -166,6 +186,65 @@ const BookList = () => {
                             <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="red.400" w="50%">Delete</Button>
                             <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="blue.100" ml={3} w="50%">Cancel</Button>
                         </Flex>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            <Modal
+            // This is add modal
+            isOpen={isAddModalOpen} onClose={closeAddModal} isCentered size="xl">
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader textAlign="center" verticalAlign="middle">Add Book</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Flex>
+                            <FormControl marginRight="1rem">
+                                <FormLabel>Title</FormLabel>
+                                <Input placeholder='Title' type='text' />
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel>Word Count</FormLabel>
+                                <Input placeholder='Count' type='number' />
+                            </FormControl>
+                        </Flex>
+                        <Flex>
+                            <FormControl marginRight="1rem">
+                                <FormLabel>Duration in minutes</FormLabel>
+                                <Input placeholder='Duration' type='number' />
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel>Release Date</FormLabel>
+                                <Input type='date' />
+                            </FormControl>
+                        </Flex>
+                        <FormControl>
+                            <FormLabel>Genre</FormLabel>
+                            <Input placeholder="Fiction, Education, etc" type='text' />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Synopsis</FormLabel>
+                            <Textarea placeholder='Write your book synopsis here' size="sm" />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Insert Book Cover Image</FormLabel>
+                            <Input type="file" accept="image/*" />
+                        </FormControl>
+                        
+                        <FormControl>
+                            <FormLabel>Insert Book Audio</FormLabel>
+                            <Input type="file" accept='audio/*' />
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={closeAddModal} colorScheme='blue' mr={3}>
+                            Save Book
+                        </Button>
+                        <Button onClick={closeAddModal}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

@@ -20,9 +20,14 @@ import {
     ModalBody,
     Button,
     ModalFooter,
+    FormLabel,
+    Input,
+    InputGroup,
+    FormControl,
+    Textarea,
   } from '@chakra-ui/react'
 
-import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { color } from 'framer-motion';
 
 const Playlist = () => {
@@ -74,6 +79,18 @@ const Playlist = () => {
         setIsDeleteModalOpen(false)
     }
 
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    // Function to open delete modal
+    const openAddModal = () => {
+        setIsAddModalOpen(true);
+    }
+
+    // Function to close delete modal
+    const closeAddModal = () => {
+        setIsAddModalOpen(false)
+    }
+
     return (
         <>
             <Flex
@@ -94,7 +111,7 @@ const Playlist = () => {
                         colorScheme="green"
                         mr={2}
                         onClick={() => {
-                        // Handle the add action
+                            openAddModal();
                         }}
                     />
                 </Flex>
@@ -121,6 +138,15 @@ const Playlist = () => {
                                         <Td textAlign="center" verticalAlign="middle">{item.bookCount}</Td>
                                         <Td textAlign="center" verticalAlign="middle">{item.totalDuration}</Td>
                                         <Td textAlign="center" verticalAlign="middle">
+                                            <IconButton
+                                                icon={<ViewIcon />}
+                                                variant="outline"
+                                                colorScheme="blue"
+                                                mr={2}
+                                                onClick={() => {
+                                                // Handle the view action
+                                                }}
+                                            />
                                             <IconButton
                                                 icon={<EditIcon />}
                                                 variant="outline"
@@ -149,7 +175,9 @@ const Playlist = () => {
             </Flex>
 
             
-            <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered>
+            <Modal 
+            //This is delete modal
+            isOpen={isDeleteModalOpen} onClose={closeDeleteModal} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader textAlign="center" verticalAlign="middle">Delete Playlist</ModalHeader>
@@ -166,6 +194,34 @@ const Playlist = () => {
                             <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="red.400" w="50%">Delete</Button>
                             <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="blue.100" ml={3} w="50%">Cancel</Button>
                         </Flex>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            <Modal
+            // This is add modal
+            isOpen={isAddModalOpen} onClose={closeAddModal} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader textAlign="center" verticalAlign="middle">Add Playlist</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <FormControl marginRight="1rem">
+                            <FormLabel>Title</FormLabel>
+                            <Input placeholder='Title' type='text' />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Description</FormLabel>
+                            <Textarea placeholder="Your playlist description" size="sm" />
+                        </FormControl>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button onClick={closeAddModal} colorScheme='blue' mr={3}>
+                            Save Playlist
+                        </Button>
+                        <Button onClick={closeAddModal}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
