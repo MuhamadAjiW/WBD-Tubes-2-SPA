@@ -9,7 +9,8 @@ import Home from "./pages/Home";
 import BookList from "./pages/Booklist";
 import Playlist from "./pages/Playlist";
 import Subscriber from "./pages/Subscriber";
-import Login from "./pages/login";
+import PlaylistDetails from "./pages/PlaylistDetail";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <BrowserRouter>
         <Flex>
           <Sidebar />
-          <Flex flex="1" p="20px" marginLeft="1rem">
+          <Flex flex="1" p="20px" marginLeft="13%">
             {" "}
             {/* Content container */}
             <Routes>
@@ -25,6 +26,7 @@ function App() {
               <Route path="/books" element={<BookList />} />
               <Route path="/playlists" element={<Playlist />} />
               <Route path="/subscribers" element={<Subscriber />} />
+              <Route path="/playlistdetails" element={<PlaylistDetails />} />
               <Route path="/login" element={<Login />} />
             </Routes>
           </Flex>
