@@ -107,7 +107,7 @@ const Subscriber = () => {
                 flexDir="row"
                 justifyContent="space-between"
                 alignItems="center"
-                w="150vh"
+                w="145vh"
                 marginBottom="2rem">
                     <Heading as="h1" size="2xl">Subscriber List</Heading>
                     <Button
@@ -122,7 +122,7 @@ const Subscriber = () => {
                     </Button>
                 </Flex>
                 <TableContainer>
-                    <Table variant="striped" size="lg" w="150vh" colorScheme="gray">
+                    <Table variant="striped" size="lg" w="145vh" colorScheme="gray">
                         <TableCaption>Author's Subscribers</TableCaption>
                         <Thead>
                             <Tr>

@@ -28,7 +28,7 @@ import {
   } from '@chakra-ui/react'
 
 import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
-import { color } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Playlist = () => {
 
@@ -91,6 +91,8 @@ const Playlist = () => {
         setIsAddModalOpen(false)
     }
 
+    const navigate = useNavigate();
+
     return (
         <>
             <Flex
@@ -102,7 +104,7 @@ const Playlist = () => {
                 flexDir="row"
                 justifyContent="space-between"
                 alignItems="center"
-                w="150vh"
+                w="145vh"
                 marginBottom="2rem">
                     <Heading as="h1" size="2xl">Playlists Management</Heading>
                     <IconButton
@@ -116,7 +118,7 @@ const Playlist = () => {
                     />
                 </Flex>
                 <TableContainer>
-                    <Table variant="striped" size="lg" w="150vh" colorScheme="gray">
+                    <Table variant="striped" size="lg" w="145vh" colorScheme="gray">
                         <TableCaption>Author's playlists</TableCaption>
                         <Thead>
                             <Tr>
@@ -144,7 +146,7 @@ const Playlist = () => {
                                                 colorScheme="blue"
                                                 mr={2}
                                                 onClick={() => {
-                                                // Handle the view action
+                                                    navigate('/playlistdetails')
                                                 }}
                                             />
                                             <IconButton
@@ -214,6 +216,11 @@ const Playlist = () => {
                         <FormControl>
                             <FormLabel>Description</FormLabel>
                             <Textarea placeholder="Your playlist description" size="sm" />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Insert Playlist Cover Image</FormLabel>
+                            <Input type="file" accept="image/*" />
                         </FormControl>
                     </ModalBody>
 

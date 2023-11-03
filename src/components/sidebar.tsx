@@ -34,7 +34,7 @@ export default function Sidebar() {
 
     return (
         <Flex
-            pos="sticky"
+            pos="fixed"
             left="5"
             h="95vh"
             marginTop="2.5vh"
@@ -51,18 +51,6 @@ export default function Sidebar() {
                 alignItems={sideSize == "small" ? "center" : "flex-start"}
                 as='nav'
             >
-                <IconButton 
-                    background='none'
-                    mt={5}
-                    _hover={{background:'none'}}
-                    icon={<FiMenu />}
-                    onClick={() => {
-                        if (sideSize == "small") 
-                            changesideSize("large")
-                        else 
-                            changesideSize("small")
-                    }}
-                />
 
                 <SideItem sideSize={sideSize} icon={FiHome} title="Home" active={activeSideItem === 'Home'} onClick={() => handleSideItemClick('Home')} />
                 <SideItem sideSize={sideSize} icon={FiBook} title="Books" active={activeSideItem === 'Books'} onClick={() => handleSideItemClick('Books')} /> 
