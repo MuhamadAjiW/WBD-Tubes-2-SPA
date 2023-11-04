@@ -11,6 +11,7 @@ import Playlist from './pages/Playlist'
 import Subscriber from './pages/Subscriber'
 import PlaylistDetails from './pages/PlaylistDetail'
 import Login from './pages/Login'
+import Register from './pages/register'
 
 function App() {
   return (
@@ -23,10 +24,12 @@ function App() {
               <Route path="/playlists" element={<Playlist />} />
               <Route path="/subscribers" element={<Subscriber />} />
               <Route path="/playlistdetails" element={<PlaylistDetails />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
       </BrowserRouter>
     </ChakraProvider>
-  )
+  );
 }
 
 export default App;
