@@ -10,23 +10,20 @@ import BookList from './pages/Booklist'
 import Playlist from './pages/Playlist'
 import Subscriber from './pages/Subscriber'
 import PlaylistDetails from './pages/PlaylistDetail'
+import Login from './pages/Login'
 
 function App() {
   return (
     <ChakraProvider>
       <BrowserRouter>
-        <Flex>
-          <Sidebar />
-          <Flex flex="1" p="20px" marginLeft="13%"> {/* Content container */}
             <Routes>
+              <Route path="/" element={<Login />} />
               <Route path="/home" element={<Home />} />
               <Route path="/books" element={<BookList />} />
               <Route path="/playlists" element={<Playlist />} />
               <Route path="/subscribers" element={<Subscriber />} />
               <Route path="/playlistdetails" element={<PlaylistDetails />} />
             </Routes>
-          </Flex>
-        </Flex>
       </BrowserRouter>
     </ChakraProvider>
   )

@@ -20,12 +20,19 @@ import {
 
 import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Sidebar() {
     const [sideSize, changesideSize] = useState("large")
-    const [activeSideItem, setactiveSideItem] = useState<string | null>(null)
     const history = useNavigate();
+    const location = useLocation();
+    let currentRoute = location.pathname.slice(1);
+
+    if (currentRoute.includes("playlist")) {
+        currentRoute = "Playlists"
+    }
+
+    const [activeSideItem, setactiveSideItem] = useState<string | null>(currentRoute)
     const handleSideItemClick = (title) => {
         setactiveSideItem(title);
         history(`/${title}`);
@@ -51,11 +58,10 @@ export default function Sidebar() {
                 alignItems={sideSize == "small" ? "center" : "flex-start"}
                 as='nav'
             >
-
                 <SideItem sideSize={sideSize} icon={FiHome} title="Home" active={activeSideItem === 'Home'} onClick={() => handleSideItemClick('Home')} />
                 <SideItem sideSize={sideSize} icon={FiBook} title="Books" active={activeSideItem === 'Books'} onClick={() => handleSideItemClick('Books')} /> 
                 <SideItem sideSize={sideSize} icon={FiList} title="Playlists" active={activeSideItem === 'Playlists'} onClick={() => handleSideItemClick('Playlists')} />  
-                <SideItem sideSize={sideSize} icon={FiUser} title="Subscribers" active={activeSideItem === 'Subscribers'} onClick={() => handleSideItemClick('Subscribers')} />                 
+                <SideItem sideSize={sideSize} icon={FiUser} title="Subscribers" active={activeSideItem === 'Subscribers'} onClick={() => handleSideItemClick('Subscribers')} />
             </Flex>
 
             <Flex
