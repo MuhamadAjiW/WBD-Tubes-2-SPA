@@ -69,10 +69,12 @@ const Playlist = () => {
     let rowCount = 1;
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [playlistTitle, setPlaylistTitle] = useState("")
 
     // Function to open delete modal
-    const openDeleteModal = () => {
+    const openDeleteModal = (title) => {
         setIsDeleteModalOpen(true);
+        setPlaylistTitle(title)
     }
 
     // Function to close delete modal
@@ -80,16 +82,29 @@ const Playlist = () => {
         setIsDeleteModalOpen(false)
     }
 
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-    // Function to open delete modal
+    const [isModalOpen, setisModalOpen] = useState(false);
+    const [editItem, setEditItem] = useState(null);
+    const [modalMode, setModalMode] = useState("add")
+    
+    // Function to open addmodal
     const openAddModal = () => {
-        setIsAddModalOpen(true);
+        setisModalOpen(true)
+        setModalMode("add")
+        setEditItem(null)
     }
 
-    // Function to close delete modal
-    const closeAddModal = () => {
-        setIsAddModalOpen(false)
+    // Function to open edit modal
+    const openEditModal = (item) => {
+        setisModalOpen(true)
+        setModalMode("edit")
+        setEditItem(item)
+    }
+
+    // Function to close add/edit modal
+    const closeModal = () => {
+        setisModalOpen(false)
+        setModalMode("add")
+        setEditItem(null)
     }
 
     const navigate = useNavigate();
@@ -158,7 +173,7 @@ const Playlist = () => {
                                                     colorScheme="teal"
                                                     mr={2}
                                                     onClick={() => {
-                                                    // Handle the edit action
+                                                        openEditModal(item)
                                                     }}
                                                 />
                                                 <IconButton
@@ -167,7 +182,7 @@ const Playlist = () => {
                                                     colorScheme="red"
                                                     mr={2}
                                                     onClick={() => {
-                                                        openDeleteModal()
+                                                        openDeleteModal(item.title)
                                                     }}
                                                 />
                                             </Td>
@@ -188,7 +203,7 @@ const Playlist = () => {
                         <ModalHeader textAlign="center" verticalAlign="middle">Delete Playlist</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody textAlign="center" verticalAlign="middle">
-                            Are you sure you want to delete this playlist?
+                            Are you sure you want to delete {playlistTitle}?
                         </ModalBody>
                         <ModalFooter textAlign="center" verticalAlign="middle">
                             <Flex
@@ -205,20 +220,20 @@ const Playlist = () => {
 
                 <Modal
                 // This is add modal
-                isOpen={isAddModalOpen} onClose={closeAddModal} isCentered>
+                isOpen={isModalOpen} onClose={closeModal} isCentered>
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader textAlign="center" verticalAlign="middle">Add Playlist</ModalHeader>
+                        <ModalHeader textAlign="center" verticalAlign="middle">{modalMode === "add" ? "Add Playlist" : "Edit Playlist"}</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <FormControl marginRight="1rem">
                                 <FormLabel>Title</FormLabel>
-                                <Input placeholder='Title' type='text' />
+                                <Input placeholder='Title' type='text' value={editItem ? editItem.title : ""} />
                             </FormControl>
 
                             <FormControl>
                                 <FormLabel>Description</FormLabel>
-                                <Textarea placeholder="Your playlist description" size="sm" />
+                                <Textarea placeholder="Your playlist description" size="sm" value={editItem ? editItem.description : ""} />
                             </FormControl>
 
                             <FormControl>
@@ -228,10 +243,10 @@ const Playlist = () => {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button onClick={closeAddModal} colorScheme='blue' mr={3}>
+                            <Button onClick={closeModal} colorScheme='blue' mr={3}>
                                 Save Playlist
                             </Button>
-                            <Button onClick={closeAddModal}>Cancel</Button>
+                            <Button onClick={closeModal}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </Modal>

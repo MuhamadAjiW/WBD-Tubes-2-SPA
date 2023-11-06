@@ -55,10 +55,12 @@ const Subscriber = () => {
     let rowCount = 1;
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [subscriberUsername, setSubscriberUsername] = useState("")
 
     // Function to open delete modal
-    const openDeleteModal = () => {
+    const openDeleteModal = (username) => {
         setIsDeleteModalOpen(true);
+        setSubscriberUsername(username)
     }
 
     // Function to close delete modal
@@ -149,7 +151,7 @@ const Subscriber = () => {
                                                     colorScheme="red"
                                                     mr={2}
                                                     onClick={() => {
-                                                        openDeleteModal()
+                                                        openDeleteModal(item.username)
                                                     }}
                                                 />
                                             </Td>
@@ -169,7 +171,7 @@ const Subscriber = () => {
                         <ModalHeader textAlign="center" verticalAlign="middle">Remove Subscriber</ModalHeader>
                         <ModalCloseButton/>
                         <ModalBody textAlign="center" verticalAlign="middle">
-                            Are you sure you want to remove this user from your subscriber list?
+                            Are you sure you want to remove user {subscriberUsername} from your subscriber list?
                         </ModalBody>
                         <ModalFooter textAlign="center" verticalAlign="middle">
                             <Flex

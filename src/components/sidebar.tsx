@@ -33,7 +33,7 @@ export default function Sidebar() {
     }
 
     const [activeSideItem, setactiveSideItem] = useState<string | null>(currentRoute)
-    const handleSideItemClick = (title) => {
+    const handleSideItemClick = (title: string) => {
         setactiveSideItem(title);
         history(`/${title}`);
     }

@@ -50,13 +50,13 @@ const BookList = () => {
             title: "Judul Buku 3",
             wordCount: 100,
             duration: 10,
-            releaseDate: "2023-10-2"
+            releaseDate: "2023-10-02"
         },
         {
             title: "Judul Buku 4",
             wordCount: 500,
             duration: 20,
-            releaseDate: "2023-10-5"
+            releaseDate: "2023-10-05"
         },
         {
             title: "Judul Buku 5",
@@ -69,10 +69,12 @@ const BookList = () => {
     let rowCount = 1;
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [bookTitle, setBookTitle] = useState("")
 
     // Function to open delete modal
-    const openDeleteModal = () => {
+    const openDeleteModal = (title) => {
         setIsDeleteModalOpen(true);
+        setBookTitle(title)
     }
 
     // Function to close delete modal
@@ -80,16 +82,29 @@ const BookList = () => {
         setIsDeleteModalOpen(false)
     }
 
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-    // Function to open delete modal
+    const [isModalOpen, setisModalOpen] = useState(false);
+    const [editItem, setEditItem] = useState(null);
+    const [modalMode, setModalMode] = useState("add")
+    
+    // Function to open addmodal
     const openAddModal = () => {
-        setIsAddModalOpen(true);
+        setisModalOpen(true)
+        setModalMode("add")
+        setEditItem(null)
     }
 
-    // Function to close delete modal
-    const closeAddModal = () => {
-        setIsAddModalOpen(false)
+    // Function to open edit modal
+    const openEditModal = (item) => {
+        setisModalOpen(true)
+        setModalMode("edit")
+        setEditItem(item)
+    }
+
+    // Function to close add/edit modal
+    const closeModal = () => {
+        setisModalOpen(false)
+        setModalMode("add")
+        setEditItem(null)
     }
 
     return (
@@ -147,7 +162,7 @@ const BookList = () => {
                                                     colorScheme="teal"
                                                     mr={2}
                                                     onClick={() => {
-                                                    // Handle the edit action
+                                                        openEditModal(item);
                                                     }}
                                                 />
                                                 <IconButton
@@ -156,7 +171,7 @@ const BookList = () => {
                                                     colorScheme="red"
                                                     mr={2}
                                                     onClick={() => {
-                                                        openDeleteModal()
+                                                        openDeleteModal(item.title)
                                                     }}
                                                 />
                                             </Td>
@@ -177,7 +192,7 @@ const BookList = () => {
                         <ModalHeader textAlign="center" verticalAlign="middle">Delete Book</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody textAlign="center" verticalAlign="middle">
-                            Are you sure you want to delete this book?
+                            Are you sure you want to delete {bookTitle}?
                         </ModalBody>
                         <ModalFooter textAlign="center" verticalAlign="middle">
                             <Flex
@@ -194,32 +209,32 @@ const BookList = () => {
 
                 <Modal
                 // This is add modal
-                isOpen={isAddModalOpen} onClose={closeAddModal} isCentered size="xl">
+                isOpen={isModalOpen} onClose={closeModal} isCentered size="xl">
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader textAlign="center" verticalAlign="middle">Add Book</ModalHeader>
+                        <ModalHeader textAlign="center" verticalAlign="middle">{modalMode === "add" ? "Add Book" : "Edit Book"}</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Flex>
                                 <FormControl marginRight="1rem">
                                     <FormLabel>Title</FormLabel>
-                                    <Input placeholder='Title' type='text' />
+                                    <Input placeholder='Title' type='text' value={editItem ? editItem.title : ""} />
                                 </FormControl>
 
                                 <FormControl>
                                     <FormLabel>Word Count</FormLabel>
-                                    <Input placeholder='Count' type='number' />
+                                    <Input placeholder='Count' type='number' value={editItem ? editItem.wordCount : ""} />
                                 </FormControl>
                             </Flex>
                             <Flex>
                                 <FormControl marginRight="1rem">
                                     <FormLabel>Duration in minutes</FormLabel>
-                                    <Input placeholder='Duration' type='number' />
+                                    <Input placeholder='Duration' type='number' value={editItem ? editItem.duration : ""} />
                                 </FormControl>
 
                                 <FormControl>
                                     <FormLabel>Release Date</FormLabel>
-                                    <Input type='date' />
+                                    <Input type='date' value={editItem ? editItem.releaseDate : ""} />
                                 </FormControl>
                             </Flex>
                             <FormControl>
@@ -243,10 +258,10 @@ const BookList = () => {
                             </FormControl>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={closeAddModal} colorScheme='blue' mr={3}>
+                            <Button onClick={closeModal} colorScheme='blue' mr={3}>
                                 Save Book
                             </Button>
-                            <Button onClick={closeAddModal}>Cancel</Button>
+                            <Button onClick={closeModal}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
