@@ -167,8 +167,8 @@ export default function Login() {
           </Button>
           <Text fontSize={"md"} color={"gray.600"} mt={0}>
             Already have an account?{" "}
-            <Link to="/register" style={{ color: "black" }}>
-              Register
+            <Link to="/login" style={{ color: "black" }}>
+              Login
             </Link>{" "}
           </Text>
         </Stack>
