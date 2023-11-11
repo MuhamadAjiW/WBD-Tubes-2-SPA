@@ -1,30 +1,26 @@
+import { Box, Heading, Container, Text, Stack, Image } from "@chakra-ui/react";
+import logoImage from "../assets/logo.svg"; // Assuming this is the correct path to your image
 import Sidebar from "../components/Sidebar";
-
-import { Box, Heading, Container, Text, Stack } from "@chakra-ui/react";
-import backgroundImage from "../assets/logo.svg";
 
 const Home = () => {
   return (
     <>
-      <Box
-        sx={{
-          minH: "100vh",
-          minW: "100vw",
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(255, 255, 255, 0.2)",
-          position: "relative",
-        }}
-      >
+      <Box>
         <Sidebar />
         <Container maxW={"3xl"}>
           <Stack
             as={Box}
             textAlign={"center"}
-            spacing={{ base: 8, md: 14 }}
-            py={{ base: 20, md: 36 }}
+            spacing={{ base: 0, md: 0 }}
+            py={{ base: 0, md: 6 }}
           >
+            <Image
+              src={logoImage}
+              alt="Logo"
+              boxSize="200px"
+              mx="auto"
+              mb={4}
+            />
             <Heading
               fontWeight={600}
               fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
@@ -35,7 +31,7 @@ const Home = () => {
                 Baca.a
               </Text>
             </Heading>
-            <Text color={"black"}>
+            <Text color={"black"} mt={8}>
               Baca.a merupakan platform untuk mendengarkan audiobook yang dapat
               diakses secara gratis dan dapat diakses dimana saja dan kapan
               saja. Baca.a juga menyediakan fitur untuk membuat pengguna nyaman
