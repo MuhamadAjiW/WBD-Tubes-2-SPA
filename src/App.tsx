@@ -23,7 +23,7 @@ function App() {
               <Route path="/books" element={<BookList />} />
               <Route path="/playlists" element={<Playlist />} />
               <Route path="/subscribers" element={<Subscriber />} />
-              <Route path="/playlistdetails" element={<PlaylistDetails />} />
+              <Route path="/playlistdetails/:id" element={<PlaylistDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
             </Routes>

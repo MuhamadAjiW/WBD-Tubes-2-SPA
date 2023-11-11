@@ -35,38 +35,41 @@ const Playlist = () => {
 
     const dummyData = [
         {
+            id: 1,
             title: "Playlist 1",
             description: "Ini playlist 1",
             bookCount: 10,
             totalDuration: 200
         },
         {
+            id: 2, 
             title: "Playlist 2",
             description: "Ini playlist 2",
             bookCount: 5,
             totalDuration: 100
         },
         {
+            id: 3, 
             title: "Playlist 3",
             description: "Ini playlist 3",
             bookCount: 2,
             totalDuration: 40
         },
         {
+            id: 4, 
             title: "Playlist 4",
             description: "Ini playlist 4",
             bookCount: 4,
             totalDuration: 80
         },
         {
+            id: 5, 
             title: "Playlist 5",
             description: "Ini playlist 5",
             bookCount: 8,
             totalDuration: 150
         }
     ]
-
-    let rowCount = 1;
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [playlistTitle, setPlaylistTitle] = useState("")
@@ -152,7 +155,7 @@ const Playlist = () => {
                                 {
                                     dummyData.map((item) => (
                                         <Tr key={item.title}>
-                                            <Td textAlign="center" verticalAlign="middle">{rowCount++}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.id}</Td>
                                             <Td textAlign="center" verticalAlign="middle">{item.title}</Td>
                                             <Td textAlign="center" verticalAlign="middle">{item.description}</Td>
                                             <Td textAlign="center" verticalAlign="middle">{item.bookCount}</Td>
@@ -164,7 +167,7 @@ const Playlist = () => {
                                                     colorScheme="blue"
                                                     mr={2}
                                                     onClick={() => {
-                                                        navigate('/playlistdetails')
+                                                        navigate(`/playlistdetails/${item.id}`, { state: { playlist: item } })
                                                     }}
                                                 />
                                                 <IconButton

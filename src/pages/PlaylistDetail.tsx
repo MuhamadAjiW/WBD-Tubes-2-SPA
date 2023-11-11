@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react'
 
 import { ArrowBackIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiPlay } from "react-icons/fi";
 import Sidebar from "../components/Sidebar";
 
@@ -117,6 +117,10 @@ const PlaylistDetails = () => {
         setIsDeleteModalOpen(false)
     }
 
+    const { id } = useParams();
+    const location = useLocation();
+    const { playlist } = location.state || {};
+
     return (
         <>
             <Sidebar />
@@ -140,11 +144,11 @@ const PlaylistDetails = () => {
                         <Image src='https://bit.ly/dan-abramov' alt='Dan Abramov' borderRadius="30px" boxSize="150px" marginRight="1rem"/>
                         <Flex
                         flexDir="column">
-                            <Heading marginBottom="0.5rem">Playlist 1</Heading>
+                            <Heading marginBottom="0.5rem">{playlist.title}</Heading>
                             <Text marginBottom="0.5rem"
                             style={{ wordWrap: "break-word" }}
                             maxWidth="500px">
-                                Playlist description
+                                {playlist.description}
                             </Text>
                             <Text as="b">Author's name</Text>
                         </Flex>
