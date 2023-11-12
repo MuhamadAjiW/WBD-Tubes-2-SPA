@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     Flex,
     Text,
@@ -21,9 +21,20 @@ import {
 import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { REST_BASE_URL } from '../constants/constants'
+
+interface IAuthor {
+    author_id: number;
+    email: string;
+    username: string;
+    password: string;
+    name: string;
+    bio: string;
+}
 
 export default function Sidebar() {
     const [sideSize, changesideSize] = useState("large")
+    const [author, setAuthor] = useState(null)
     const history = useNavigate();
     const location = useLocation();
     let currentRoute = location.pathname.slice(1);
@@ -37,6 +48,31 @@ export default function Sidebar() {
         setactiveSideItem(title);
         history(`/${title}`);
     }
+
+    const fetchAuthor = async () => {
+        const response = await fetch(`${REST_BASE_URL}/authors/1`, {
+            headers: {
+                Authorization: localStorage.getItem("token") ?? "",
+            },
+        });
+
+        if (!response.ok) {
+            console.error(`API request failed with status: ${response.status}`);
+        }
+
+
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType && contentType?.includes("application/json")) {
+            const data = await response.json();
+            setAuthor(data)
+        } else {
+            console.error(`Unexpected content type: ${contentType}`);
+        }
+    };
+
+    useEffect(() => {
+        fetchAuthor();
+    }, []);
 
 
     return (
@@ -75,8 +111,8 @@ export default function Sidebar() {
                 <Flex mt={4} align='center'>
                     <Avatar size='sm'/>
                     <Flex flexDir='column' ml={4} display={sideSize == "small" ? "none" : "flex"}>
-                        <Heading as="h3" size="sm">Sylwia Weller</Heading>
-                        <Text color="gray">Author</Text>
+                        <Heading as="h3" size="sm">{author?.name}</Heading>
+                        <Text color="gray">{author?.bio}</Text>
                     </Flex>
                 </Flex>
             </Flex>
