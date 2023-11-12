@@ -9,6 +9,7 @@ import PlaylistDetails from './pages/PlaylistDetail'
 import Login from './pages/login'
 import Register from './pages/register'
 import { RequireAuth, RequireNoAuth } from './middlewares/AuthMiddleware'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path="/playlists" element={<RequireAuth element={<Playlist/>} />} />
               <Route path="/subscribers" element={<RequireAuth element={<Subscriber/>} />} />
               <Route path="/playlistdetails/:id" element={<RequireAuth element={<PlaylistDetails/>} />} />
+              <Route path="*" element={<NotFound/>} />
             </Routes>
       </BrowserRouter>
     </ChakraProvider>
