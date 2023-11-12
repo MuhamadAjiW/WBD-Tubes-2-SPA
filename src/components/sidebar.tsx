@@ -66,7 +66,6 @@ export default function Sidebar() {
         const contentType = response.headers.get("Content-Type");
         if (contentType && contentType?.includes("application/json")) {
             const data = await response.json();
-            console.log(data)
             setAuthor(data)
         } else {
             console.error(`Unexpected content type: ${contentType}`);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+// import { FaGoogle } from "react-icons/fa";
 import backgroundImage from "../assets/logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
@@ -16,8 +16,10 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
+import { REST_BASE_URL } from "../constants/constants";
 
-export default function Login() {
+export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -40,8 +42,8 @@ export default function Login() {
   const validateEmailAndPassword = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^.{8,}$/;
-    const usernameRegex = /^[[:ascii:]]+$/;
-    const fullnameRegex = /^[[:ascii:]]+$/;
+    const usernameRegex = /^[ -~]+$/;
+    const fullnameRegex = /^[ -~]+$/;
     let valid = true;
     if (!emailRegex.test(email)) {
       setEmailError("Email format is invalid");
@@ -56,12 +58,14 @@ export default function Login() {
       setPasswordError("");
     }
     if (!usernameRegex.test(username)) {
+      console.log(username);
       setUsernameError("Username contains non ASCII characters");
       valid = false;
     } else {
       setUsernameError("");
     }
     if (!fullnameRegex.test(fullname)) {
+      console.log(fullname);
       setFullnameError("Fullname contains non ASCII characters");
       valid = false;
     } else {
@@ -70,9 +74,40 @@ export default function Login() {
     return valid;
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (validateEmailAndPassword()) {
-      //Implementasi Nanti
+        const response = await fetch(`${REST_BASE_URL}/authors`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username,
+            password: password,
+            name: fullname,
+            bio: "This user does not have a bio",
+          })
+      });
+      
+      if (!response.ok) {
+          console.error(`API request failed with status: ${response.status}`);
+      }
+
+
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType?.includes("application/json")) {
+          if(response.status == 201){
+            console.log("Success");
+            navigate('/login');
+          } else{
+            console.log("Failed");
+            // TODO: Add interactive errors
+          }
+      } else {
+          console.error(`Unexpected content type: ${contentType}`);
+      }
     }
   };
 
@@ -94,7 +129,7 @@ export default function Login() {
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack marginTop={"1vh"}>
           <Heading fontSize={"4xl"}>Welcome To Baca.a 👋</Heading>
-          <Button
+          {/* <Button
             leftIcon={<FaGoogle />}
             colorScheme="black"
             variant="outline"
@@ -104,7 +139,7 @@ export default function Login() {
             onClick={handleRegister}
           >
             Sign in with Google
-          </Button>
+          </Button> */}
           <FormControl id="email">
             <FormLabel>Email</FormLabel>
             <Input
@@ -150,7 +185,7 @@ export default function Login() {
             <Input
               type="text"
               value={fullname}
-              onChange={handleUsernameChange}
+              onChange={handleFullnameChange}
               bg="white"
               placeholder="Masukkan fullname"
             />

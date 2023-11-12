@@ -52,10 +52,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (validateEmailAndPassword()) {
-      console.log(JSON.stringify({
-        email: email,
-        password: password,
-      }))
       const response = await fetch(`${REST_BASE_URL}/token`, {
           method: 'POST',
           headers: {
@@ -82,11 +78,13 @@ export default function Login() {
             document.cookie = `token=${data.data}`
             
             navigate('/books');
+          } else{
+            console.log("Failed");
+            // TODO: Add interactive errors
           }
       } else {
           console.error(`Unexpected content type: ${contentType}`);
       }
-      //Implementasi Nanti
     }
   };
 
