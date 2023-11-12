@@ -51,19 +51,22 @@ export default function Sidebar() {
 
     const fetchAuthor = async () => {
         const response = await fetch(`${REST_BASE_URL}/authors/1`, {
+            method: 'GET',
             headers: {
-                Authorization: localStorage.getItem("token") ?? "",
+                'Accept': 'application/json',
+                'Authorization': localStorage.getItem("token") ?? "",
             },
         });
-
+        
         if (!response.ok) {
             console.error(`API request failed with status: ${response.status}`);
         }
 
 
         const contentType = response.headers.get("Content-Type");
-        if (!contentType && contentType?.includes("application/json")) {
+        if (contentType && contentType?.includes("application/json")) {
             const data = await response.json();
+            console.log(data)
             setAuthor(data)
         } else {
             console.error(`Unexpected content type: ${contentType}`);

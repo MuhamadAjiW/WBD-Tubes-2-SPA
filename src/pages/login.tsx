@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { Link, useNavigate } from 'react-router-dom';
+// import { FaGoogle } from "react-icons/fa";
 import backgroundImage from "../assets/logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
@@ -16,8 +16,10 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
+import { REST_BASE_URL } from "../constants/constants";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -48,8 +50,42 @@ export default function Login() {
     return valid;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validateEmailAndPassword()) {
+      console.log(JSON.stringify({
+        email: email,
+        password: password,
+      }))
+      const response = await fetch(`${REST_BASE_URL}/token`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          })
+      });
+      
+      if (!response.ok) {
+          console.error(`API request failed with status: ${response.status}`);
+      }
+
+
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType?.includes("application/json")) {
+          const data = await response.json();
+          console.log(data);
+          if(response.status == 200){
+            console.log("Success");
+            document.cookie = `token=${data.data}`
+            
+            navigate('/books');
+          }
+      } else {
+          console.error(`Unexpected content type: ${contentType}`);
+      }
       //Implementasi Nanti
     }
   };
@@ -72,7 +108,7 @@ export default function Login() {
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack marginTop={"5vh"}>
           <Heading fontSize={"4xl"}>Welcome Back 👋</Heading>
-          <Button
+          {/* <Button
             leftIcon={<FaGoogle />}
             colorScheme="black"
             variant="outline"
@@ -82,7 +118,7 @@ export default function Login() {
             onClick={handleLogin}
           >
             Sign in with Google
-          </Button>
+          </Button> */}
           <FormControl id="email">
             <FormLabel>Email</FormLabel>
             <Input
