@@ -25,16 +25,15 @@ import { REST_BASE_URL } from '../constants/constants'
 
 interface IAuthor {
     author_id: number;
-    email: string;
-    username: string;
-    password: string;
-    name: string;
     bio: string;
+    email: string;
+    name: string;
+    username: string;
 }
 
 export default function Sidebar() {
     const [sideSize, changesideSize] = useState("large")
-    const [author, setAuthor] = useState(null)
+    const [author, setAuthor] = useState<IAuthor | null>(null);
     const history = useNavigate();
     const location = useLocation();
     let currentRoute = location.pathname.slice(1);
@@ -53,21 +52,20 @@ export default function Sidebar() {
         const response = await fetch(`${REST_BASE_URL}/authors/1`, {
             headers: {
                 Authorization: localStorage.getItem("token") ?? "",
+                'Content-Type': 'application/json',
             },
         });
 
         if (!response.ok) {
             console.error(`API request failed with status: ${response.status}`);
-        }
-
-
-        const contentType = response.headers.get("Content-Type");
-        if (!contentType && contentType?.includes("application/json")) {
-            const data = await response.json();
-            setAuthor(data)
         } else {
-            console.error(`Unexpected content type: ${contentType}`);
+            const data = await response.json();
+
+            console.log(`Before fetch ${JSON.stringify(data.data, null, 2)}`)
+            setAuthor(data.data)
+            console.log(`After fetch ${author}`)
         }
+
     };
 
     useEffect(() => {
