@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Table,
     Thead,
@@ -30,51 +30,65 @@ import {
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from 'framer-motion';
 import Sidebar from '../components/Sidebar';
+import { useCookies } from 'react-cookie';
+import { REST_BASE_URL } from '../constants/constants';
+import { toast } from "react-toastify";
+import axios from 'axios';
+
+interface IBookP {
+    bookp_id: number;
+    title: string;
+    genre: string;
+    synopsis: string;
+    release_date: Date;
+    word_count: number;
+    duration: number;
+    graphic_cntn: boolean;
+    image_path: string;
+    audio_path: string;
+    author_id: number;
+}
 
 const BookList = () => {
 
-    const dummyData = [
-        {
-            title: "Judul Buku 1",
-            wordCount: 10000,
-            duration: 40,
-            releaseDate: "2023-10-20"
-        },
-        {
-            title: "Judul Buku 2",
-            wordCount: 2000,
-            duration: 20,
-            releaseDate: "2023-10-30"
-        },
-        {
-            title: "Judul Buku 3",
-            wordCount: 100,
-            duration: 10,
-            releaseDate: "2023-10-02"
-        },
-        {
-            title: "Judul Buku 4",
-            wordCount: 500,
-            duration: 20,
-            releaseDate: "2023-10-05"
-        },
-        {
-            title: "Judul Buku 5",
-            wordCount: 8000,
-            duration: 40,
-            releaseDate: "2023-10-26"
+    const [cookies, setCookie] = useCookies(['token']);
+    const [bookPData, setBookPData] = useState<IBookP[]>([]);
+
+    // Fetch Author Books
+    const fetchBookP = async () => {
+
+        const token = cookies.token;
+
+        const response = await fetch(`${REST_BASE_URL}/books/author/1`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': token ?? "Bearer " + token,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            console.error(`API request failed with status: ${response.status}`);
+        } else {
+            const data = await response.json();
+            setBookPData(data.data)
         }
-    ]
+    }
+
+    useEffect(() => {
+        fetchBookP();
+    }, [])
 
     let rowCount = 1;
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [bookTitle, setBookTitle] = useState("")
+    const [bookModalData, setBookModalData] = useState<IBookP | null>(null)
 
     // Function to open delete modal
-    const openDeleteModal = (title) => {
+    const openDeleteModal = (data) => {
         setIsDeleteModalOpen(true);
-        setBookTitle(title)
+        setBookModalData(data)
     }
 
     // Function to close delete modal
@@ -82,29 +96,158 @@ const BookList = () => {
         setIsDeleteModalOpen(false)
     }
 
+    // Delete Book
+    const deleteBook = async (bookp_id: number | null) => {
+        try {
+            const token = cookies.token;
+
+            // Send a DELETE request to the server
+            const response = await fetch(`${REST_BASE_URL}/books/${bookp_id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token ?? "Bearer " + token,
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`API request failed with status: ${response.status}`);
+            } else {
+                // Book deleted successfully, update the bookPData state
+                setBookPData((prevData) => prevData.filter((item) => item.bookp_id !== bookp_id));
+            }
+        } catch (error) {
+            console.error('Error deleting book:', error);
+        }
+    }
+
+    const [image, setImage] = useState("");
+    const handleImage = async (file) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            if (event.target && event.target.result) {
+                var res = event.target.result.split(",")[1];
+                setImage(res);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const [audio, setAudio] = useState("");
+    const handleAudio = async (file) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            if (event.target && event.target.result) {
+                var res = event.target.result.split(",")[1];
+                setAudio(res);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     const [isModalOpen, setisModalOpen] = useState(false);
-    const [editItem, setEditItem] = useState(null);
+
+    const [title, setTitle] = useState("");
+    const [genre, setGenre] = useState("");
+    const [duration, setDuration] = useState(0);
+    const [synopsis, setSynopsis] = useState("");
+    const [word_count, setWordCount] = useState(0);
+    const [release_date, setReleaseDate] = useState(new Date());
+    const [graphic_cntn, setGraphicCntn] = useState(false);
+    const [author_id, setAuthorId] = useState(1);
+
+    const image_path = "";
+    const audio_path = "";
+
     const [modalMode, setModalMode] = useState("add")
     
     // Function to open addmodal
     const openAddModal = () => {
         setisModalOpen(true)
         setModalMode("add")
-        setEditItem(null)
+        setTitle("");
+        setGenre("");
+        setSynopsis("");
+        setWordCount(0);
+        setDuration(0);
+        setGraphicCntn(false);
+        setReleaseDate(new Date());
+        setImage("");
+        setAudio("");
     }
 
     // Function to open edit modal
     const openEditModal = (item) => {
         setisModalOpen(true)
         setModalMode("edit")
-        setEditItem(item)
+        setTitle(item.title);
+        setGenre(item.genre);
+        setSynopsis(item.synopsis);
+        setWordCount(item.word_count);
+        setDuration(item.duration);
+        setGraphicCntn(item.graphic_cntn);
+        setReleaseDate(item.release_date);
     }
 
     // Function to close add/edit modal
     const closeModal = () => {
         setisModalOpen(false)
         setModalMode("add")
-        setEditItem(null)
+        setTitle("");
+        setGenre("");
+        setSynopsis("");
+        setWordCount(0);
+        setDuration(0);
+        setGraphicCntn(false);
+        setReleaseDate(new Date());
+        setImage("");
+        setAudio("");
+    }
+
+    const addBook = async () => {
+        if (!title || !genre || !duration || !synopsis || !word_count || !release_date || !image || !audio) {
+            toast.error("Please fill in all the required fields.");
+            return;
+        }
+
+        const body = {
+            title,
+            genre,
+            duration,
+            synopsis,
+            word_count,
+            release_date,
+            image,
+            audio,
+            author_id,
+            graphic_cntn,
+            image_path,
+            audio_path,
+        };
+
+        try {
+            const token = cookies.token;
+            const response = await fetch(`${REST_BASE_URL}/books`, {
+                method: "POST",
+                headers: {
+                    'Authorization': token ?? "Bearer " + token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+
+            if (!response.ok) {
+                console.error(`API request failed with status: ${response.status}`);
+                toast.error("Failed to add the book. Please try again.");
+            } else {
+                // Book added successfully, update the bookPData state
+                const newData = await response.json();
+                setBookPData((prevData) => [...prevData, newData.data]);
+                toast.success("Book added successfully!");
+                closeModal(); // Close the modal after successful addition
+            }
+        } catch (error) {
+            console.error('Error adding book:', error);
+        }
     }
 
     return (
@@ -148,13 +291,13 @@ const BookList = () => {
                             </Thead>
                             <Tbody>
                                 {
-                                    dummyData.map((item) => (
+                                    bookPData.map((item) => (
                                         <Tr key={item.title}>
                                             <Td textAlign="center" verticalAlign="middle">{rowCount++}</Td>
                                             <Td textAlign="center" verticalAlign="middle">{item.title}</Td>
-                                            <Td textAlign="center" verticalAlign="middle">{item.wordCount}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.word_count}</Td>
                                             <Td textAlign="center" verticalAlign="middle">{item.duration}</Td>
-                                            <Td textAlign="center" verticalAlign="middle">{item.releaseDate}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.release_date.slice(0,10)}</Td>
                                             <Td textAlign="center" verticalAlign="middle">
                                                 <IconButton
                                                     icon={<EditIcon />}
@@ -171,7 +314,7 @@ const BookList = () => {
                                                     colorScheme="red"
                                                     mr={2}
                                                     onClick={() => {
-                                                        openDeleteModal(item.title)
+                                                        openDeleteModal(item)
                                                     }}
                                                 />
                                             </Td>
@@ -192,7 +335,7 @@ const BookList = () => {
                         <ModalHeader textAlign="center" verticalAlign="middle">Delete Book</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody textAlign="center" verticalAlign="middle">
-                            Are you sure you want to delete {bookTitle}?
+                            Are you sure you want to delete {bookModalData?.title}?
                         </ModalBody>
                         <ModalFooter textAlign="center" verticalAlign="middle">
                             <Flex
@@ -200,7 +343,9 @@ const BookList = () => {
                             alignItems="center"
                             w="100%"
                             >
-                                <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="red.400" w="50%">Delete</Button>
+                                <Button onClick={() => {
+                                    deleteBook(bookModalData?.bookp_id);
+                                    closeDeleteModal();}} style={{color: "white"}} backgroundColor="red.400" w="50%">Delete</Button>
                                 <Button onClick={closeDeleteModal} style={{color: "white"}} backgroundColor="blue.100" ml={3} w="50%">Cancel</Button>
                             </Flex>
                         </ModalFooter>
@@ -218,50 +363,52 @@ const BookList = () => {
                             <Flex>
                                 <FormControl marginRight="1rem">
                                     <FormLabel>Title</FormLabel>
-                                    <Input placeholder='Title' type='text' value={editItem ? editItem.title : ""} />
+                                    <Input placeholder='Title' type='text' value={title} onChange={(e) => setTitle(e.target.value)}/>
                                 </FormControl>
 
                                 <FormControl>
                                     <FormLabel>Word Count</FormLabel>
-                                    <Input placeholder='Count' type='number' value={editItem ? editItem.wordCount : ""} />
+                                    <Input placeholder='Count' type='number' value={word_count} onChange={(e) => setWordCount(Number(e.target.value))}/>
                                 </FormControl>
                             </Flex>
                             <Flex>
                                 <FormControl marginRight="1rem">
                                     <FormLabel>Duration in minutes</FormLabel>
-                                    <Input placeholder='Duration' type='number' value={editItem ? editItem.duration : ""} />
+                                    <Input placeholder='Duration' type='number' value={duration} onChange={(e) => setDuration(Number(e.target.value))}/>
                                 </FormControl>
 
                                 <FormControl>
                                     <FormLabel>Release Date</FormLabel>
-                                    <Input type='date' value={editItem ? editItem.releaseDate : ""} />
+                                    <Input type='date' />
                                 </FormControl>
                             </Flex>
                             <FormControl>
                                 <FormLabel>Genre</FormLabel>
-                                <Input placeholder="Fiction, Education, etc" type='text' />
+                                <Input placeholder="Fiction, Education, etc" type='text' value={genre} onChange={(e) => setGenre(e.target.value)}/>
                             </FormControl>
 
                             <FormControl>
                                 <FormLabel>Synopsis</FormLabel>
-                                <Textarea placeholder='Write your book synopsis here' size="sm" />
+                                <Textarea placeholder='Write your book synopsis here' size="sm" value={synopsis} onChange={(e) => setSynopsis(e.target.value)}/>
                             </FormControl>
 
                             <FormControl>
                                 <FormLabel>Insert Book Cover Image</FormLabel>
-                                <Input type="file" accept="image/*" />
+                                <Input type="file" accept="image/*" onChange={(e) => handleImage(e.target.files[0])}/>
                             </FormControl>
                             
                             <FormControl>
                                 <FormLabel>Insert Book Audio</FormLabel>
-                                <Input type="file" accept='audio/*' />
+                                <Input type="file" accept='audio/*' onChange={(e) => handleAudio(e.target.files[0])}/>
                             </FormControl>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={closeModal} colorScheme='blue' mr={3}>
+                            <Button onClick={modalMode === "add" ? addBook : closeModal} colorScheme='blue' mr={3}>
                                 Save Book
                             </Button>
-                            <Button onClick={closeModal}>Cancel</Button>
+                            <Button onClick={() => {
+                                closeModal();
+                            }}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </Modal>

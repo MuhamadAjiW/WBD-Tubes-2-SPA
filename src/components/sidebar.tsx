@@ -22,6 +22,7 @@ import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { REST_BASE_URL } from '../constants/constants'
+import { useCookies } from 'react-cookie'
 
 interface IAuthor {
     author_id: number;
@@ -36,6 +37,7 @@ export default function Sidebar() {
     const [author, setAuthor] = useState<IAuthor | null>(null);
     const history = useNavigate();
     const location = useLocation();
+    const [cookies, setCookie] = useCookies(['token']);
     let currentRoute = location.pathname.slice(1);
 
     if (currentRoute.includes("playlist")) {
@@ -49,21 +51,24 @@ export default function Sidebar() {
     }
 
     const fetchAuthor = async () => {
+        const token = cookies.token;
+
+        // Ntar idnya bakal fetch ke /token/id dlu
         const response = await fetch(`${REST_BASE_URL}/authors/1`, {
+            method: 'GET',
             headers: {
-                Authorization: localStorage.getItem("token") ?? "",
+                'Accept': 'application/json',
+                'Authorization': token ?? "Bearer " + token,
                 'Content-Type': 'application/json',
             },
         });
-
+        
         if (!response.ok) {
             console.error(`API request failed with status: ${response.status}`);
         } else {
             const data = await response.json();
 
-            console.log(`Before fetch ${JSON.stringify(data.data, null, 2)}`)
             setAuthor(data.data)
-            console.log(`After fetch ${author}`)
         }
 
     };
