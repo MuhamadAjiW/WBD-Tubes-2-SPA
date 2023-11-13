@@ -22,6 +22,7 @@ import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { REST_BASE_URL } from '../constants/constants'
+import { useCookies } from 'react-cookie'
 
 interface IAuthor {
     author_id: number;
@@ -37,6 +38,7 @@ export default function Sidebar() {
     const [author, setAuthor] = useState(null)
     const history = useNavigate();
     const location = useLocation();
+    const [cookies, setCookie] = useCookies(['token']);
     let currentRoute = location.pathname.slice(1);
 
     if (currentRoute.includes("playlist")) {
@@ -50,11 +52,13 @@ export default function Sidebar() {
     }
 
     const fetchAuthor = async () => {
+        const token = cookies.token;
+
         const response = await fetch(`${REST_BASE_URL}/authors/1`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Authorization': localStorage.getItem("token") ?? "",
+                'Authorization': token ?? "Bearer " + token,
             },
         });
         

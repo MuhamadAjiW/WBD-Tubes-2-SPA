@@ -17,6 +17,7 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { REST_BASE_URL } from "../constants/constants";
+import { useCookies } from "react-cookie";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Login() {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [cookies, setCookie] = useCookies(['token']);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(event.target.value);
@@ -75,7 +77,7 @@ export default function Login() {
           console.log(data);
           if(response.status == 200){
             console.log("Success");
-            document.cookie = `token=${data.data}`
+            setCookie('token', data.data);
             
             navigate('/books');
           } else{
