@@ -79,7 +79,7 @@ export default function Login() {
             console.log("Success");
             setCookie('token', data.data);
             
-            navigate('/books');
+            navigate('/home');
           } else{
             console.log("Failed");
             // TODO: Add interactive errors
