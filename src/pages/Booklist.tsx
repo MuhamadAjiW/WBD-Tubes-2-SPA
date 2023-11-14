@@ -53,6 +53,7 @@ const BookList = () => {
 
     const [cookies, setCookie] = useCookies(['token']);
     const [bookPData, setBookPData] = useState<IBookP[]>([]);
+    const [editedBook, setEditedBook] = useState<IBookP>();
 
     // Fetch Author Books
     const fetchBookP = async () => {
@@ -154,6 +155,7 @@ const BookList = () => {
     const [release_date, setReleaseDate] = useState(new Date());
     const [graphic_cntn, setGraphicCntn] = useState(false);
     const [author_id, setAuthorId] = useState(1);
+    const [bookp_id, setBookPId] = useState(0);
 
     const image_path = "";
     const audio_path = "";
@@ -186,6 +188,7 @@ const BookList = () => {
         setDuration(item.duration);
         setGraphicCntn(item.graphic_cntn);
         setReleaseDate(item.release_date);
+        setBookPId(item.bookp_id);
     }
 
     // Function to close add/edit modal
@@ -201,8 +204,11 @@ const BookList = () => {
         setReleaseDate(new Date());
         setImage("");
         setAudio("");
+        setBookPId(0);
     }
 
+
+    // Add book to rest
     const addBook = async () => {
         if (!title || !genre || !duration || !synopsis || !word_count || !release_date || !image || !audio) {
             toast.error("Please fill in all the required fields.");
@@ -248,6 +254,70 @@ const BookList = () => {
         } catch (error) {
             console.error('Error adding book:', error);
         }
+    }
+
+    const editBook = async () => {
+        if (!title || !genre || !duration || !synopsis || !word_count || !release_date) {
+            toast.error("Please fill in all the required fields.");
+            return;
+        }
+
+        const body = {
+            title,
+            genre,
+            duration,
+            synopsis,
+            word_count,
+            release_date,
+            image,
+            audio,
+            author_id,
+            graphic_cntn,
+            image_path,
+            audio_path,
+        };
+
+        try {
+            const token = cookies.token;
+            const response = await fetch(`${REST_BASE_URL}/books/` + String(bookp_id), {
+                method: "PATCH",
+                headers: {
+                    'Authorization': token ?? "Bearer " + token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+
+            if (!response.ok) {
+                console.error(`API request failed with status: ${response.status}`);
+                toast.error("Failed to edit the book. Please try again.");
+            } else {
+                // Book edited successfully, update the bookPData state
+                const newData = await response.json();
+                
+                // Find the index of the book in the state
+                const index = bookPData.findIndex(item => item.bookp_id === newData.data.bookp_id);
+
+                console.log(index)
+                console.log(bookPData[index])
+                if (index !== -1) {
+                    // Update the specific book in the state
+                    setBookPData((prevData) => {
+                        const newDataArray = [...prevData];
+                        if (newDataArray[index]) {
+                            newDataArray[index] = newData.data;
+                        }
+                         return newDataArray;
+                    });
+                }
+
+                toast.success("Book edited successfully!");
+                closeModal(); // Close the modal after successful addition
+            }
+        } catch (error) {
+            console.error('Error editing book:', error);
+        }
+
     }
 
     return (
@@ -379,7 +449,8 @@ const BookList = () => {
 
                                 <FormControl>
                                     <FormLabel>Release Date</FormLabel>
-                                    <Input type='date' />
+                                    <Input type='date'
+                                    onChange={(e) => setReleaseDate(new Date(e.target.value))} />
                                 </FormControl>
                             </Flex>
                             <FormControl>
@@ -401,9 +472,22 @@ const BookList = () => {
                                 <FormLabel>Insert Book Audio</FormLabel>
                                 <Input type="file" accept='audio/*' onChange={(e) => handleAudio(e.target.files[0])}/>
                             </FormControl>
+                            <FormControl>
+                            <InputGroup>
+                                <input
+                                    type="checkbox"
+                                    id="graphicContentCheckbox"
+                                    checked={graphic_cntn}
+                                    onChange={(e) => setGraphicCntn(e.target.checked)}
+                                />
+                                <FormLabel htmlFor="graphicContentCheckbox" ml={2}>
+                                    Include Graphic Content
+                                </FormLabel>
+                            </InputGroup>
+                        </FormControl>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={modalMode === "add" ? addBook : closeModal} colorScheme='blue' mr={3}>
+                            <Button onClick={modalMode === "add" ? addBook : editBook} colorScheme='blue' mr={3}>
                                 Save Book
                             </Button>
                             <Button onClick={() => {
