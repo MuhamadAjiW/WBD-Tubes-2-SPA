@@ -115,6 +115,7 @@ const BookList = () => {
             } else {
                 // Book deleted successfully, update the bookPData state
                 setBookPData((prevData) => prevData.filter((item) => item.bookp_id !== bookp_id));
+                toast.success("Book deleted successfully!");
             }
         } catch (error) {
             console.error('Error deleting book:', error);
@@ -298,8 +299,6 @@ const BookList = () => {
                 // Find the index of the book in the state
                 const index = bookPData.findIndex(item => item.bookp_id === newData.data.bookp_id);
 
-                console.log(index)
-                console.log(bookPData[index])
                 if (index !== -1) {
                     // Update the specific book in the state
                     setBookPData((prevData) => {
