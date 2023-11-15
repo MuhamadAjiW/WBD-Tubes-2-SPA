@@ -29,7 +29,7 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import TopBar from "../components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "../constants/constants";
 import { toast } from "react-toastify";
@@ -43,34 +43,71 @@ interface IPlaylist {
 }
 
 const Playlist = () => {
+  const playlistData = [
+    {
+      id: 1,
+      title: "Playlist 1",
+      description: "Ini playlist 1",
+      bookCount: 10,
+      totalDuration: 200,
+    },
+    {
+      id: 2,
+      title: "Playlist 2",
+      description: "Ini playlist 2",
+      bookCount: 5,
+      totalDuration: 100,
+    },
+    {
+      id: 3,
+      title: "Playlist 3",
+      description: "Ini playlist 3",
+      bookCount: 2,
+      totalDuration: 40,
+    },
+    {
+      id: 4,
+      title: "Playlist 4",
+      description: "Ini playlist 4",
+      bookCount: 4,
+      totalDuration: 80,
+    },
+    {
+      id: 5,
+      title: "Playlist 5",
+      description: "Ini playlist 5",
+      bookCount: 8,
+      totalDuration: 150,
+    },
+  ];
   const [cookies, setCookie] = useCookies(["token"]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [playlistData, setPlaylistData] = useState<IPlaylist[]>([]);
+  // const [playlistData, setPlaylistData] = useState<IPlaylist[]>([]);
 
-  const fetchPlaylist = async () => {
-    const token = cookies.token;
+  // const fetchPlaylist = async () => {
+  //   const token = cookies.token;
 
-    const response = await fetch(`${REST_BASE_URL}/playlists/author/1`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: token ?? "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    });
+  //   const response = await fetch(`${REST_BASE_URL}/playlists/author/1`, {
+  //     method: "GET",
+  //     headers: {
+  //       Accept: "application/json",
+  //       Authorization: token ?? "Bearer " + token,
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
 
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-      setPlaylistData(data.data);
-    }
-  };
+  //   if (!response.ok) {
+  //     console.error(`API request failed with status: ${response.status}`);
+  //   } else {
+  //     const data = await response.json();
+  //     setPlaylistData(data.data);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchPlaylist();
-  }, []);
+  // useEffect(() => {
+  //   fetchPlaylist();
+  // }, []);
 
   // Function to open delete modal
   const openDeleteModal = (item) => {
@@ -261,13 +298,8 @@ const Playlist = () => {
 
   return (
     <>
-      <Sidebar />
-      <Flex
-        flex="1"
-        p="20px"
-        flexDirection="column"
-        ml={{ base: "0", lg: "20%" }}
-      >
+      <TopBar />
+      <Flex flex="1" p="20px" flexDirection="column">
         <Flex
           flex="1"
           p="20px"
@@ -287,45 +319,23 @@ const Playlist = () => {
             onClick={() => {
               openAddModal();
             }}
-            marginLeft={{ md: "2", base: "0" }}
           />
         </Flex>
         <TableContainer>
-          <Table
-            variant="striped"
-            size="md"
-            colorScheme="gray"
-            overflowX="auto"
-          >
+          <Table variant="striped" size="md" colorScheme="gray">
             <TableCaption>Author's playlists</TableCaption>
             <Thead>
               <Tr>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   No.
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Title
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Description
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Action
                 </Th>
               </Tr>
@@ -355,11 +365,7 @@ const Playlist = () => {
                     {item.description}
                   </Td>
                   <Td>
-                    <Flex
-                      direction={{ base: "column", md: "row" }}
-                      align="center"
-                      justifyContent={{ base: "center", md: "flex-start" }}
-                    >
+                    <Flex align="center" justify="center">
                       <IconButton
                         icon={<ViewIcon />}
                         variant="outline"

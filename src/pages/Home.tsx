@@ -1,12 +1,12 @@
 import { Box, Heading, Container, Text, Stack, Image } from "@chakra-ui/react";
 import logoImage from "../assets/logo.svg"; // Assuming this is the correct path to your image
-import Sidebar from "../components/Sidebar";
+import TopBar from "../components/TopBar";
 
 const Home = () => {
   return (
     <>
       <Box>
-        <Sidebar />
+        <TopBar />
         <Container maxW={"3xl"}>
           <Stack
             as={Box}
