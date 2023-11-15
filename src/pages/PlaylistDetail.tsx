@@ -127,6 +127,15 @@ const PlaylistDetails = () => {
             setAuthorData(data.authorData)
             setPlaylistId(data.playlistData.playlist_id)
 
+            // Filter out books that are already in the playlistBooks from recommendedBooks
+            setRecommendedBooks((prevRecommendedBooks) =>
+                prevRecommendedBooks.filter((item) =>
+                    !data.booksInPlaylist.some(
+                        (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
+                    )
+                )
+            );
+
             console.log(data.booksInPlaylist)
         }
     }
@@ -157,7 +166,25 @@ const PlaylistDetails = () => {
               console.log('Book added to playlist successfully');
               // Filter out the book from recommendedBooks
 
-              fetchPlaylistBook(); // Refetch data after a successful addition
+              setPlaylistBooks((prevPlaylistBooks) => {
+                const deletedBook = recommendedBooks.find(
+                  (item) => item.bookp_id === bookp_id
+                );
+            
+                if (deletedBook) {
+                    return [...prevPlaylistBooks, {
+                        bookp_id: deletedBook.bookp_id,
+                        playlist_id,
+                        bookp: deletedBook,
+                    }];
+                }
+            
+                return prevPlaylistBooks;
+              });
+
+              setRecommendedBooks((prevRecommendedBooks) =>
+                prevRecommendedBooks.filter((item) => item.bookp_id !== bookp_id)
+              );
             }
           } catch (error) {
             console.error('Error adding book to playlist:', error);
@@ -188,8 +215,22 @@ const PlaylistDetails = () => {
                 // Handle success, maybe show a success message or close a modal
                 console.log('Book deleted from playlist successfully');
                 // Filter out the book from recommendedBooks
-  
-                fetchPlaylistBook(); // Refetch data after a successful addition
+
+                setRecommendedBooks((prevRecommendedBooks) => {
+                    const deletedBook = playlistBooks.find(
+                      (item) => item.bookp.bookp_id === bookp_id
+                    );
+                
+                    if (deletedBook) {
+                      return [...prevRecommendedBooks, deletedBook.bookp];
+                    }
+                
+                    return prevRecommendedBooks;
+                  });
+
+                  setPlaylistBooks((prevPlaylistBooks) =>
+                    prevPlaylistBooks.filter((item) => item.bookp.bookp_id !== bookp_id)
+                );
             }
         } catch (error) {
             console.error('Error adding book to playlist:', error);
@@ -200,38 +241,34 @@ const PlaylistDetails = () => {
         fetchPlaylistBook();
     }, [])
 
-    // State to manage the audio playback
-    const [audioSrc, setAudioSrc] = useState<string | null>(null);
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    // Handle play audiobook
+    const [audioIsPlaying, setAudioIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const audioRef = useRef<HTMLAudioElement>(null);
-
-    // Function to handle audio play/pause
-    const toggleAudio = (audioPath: string) => {
-        if (isPlaying) {
+    const handlePlayButtonClick = (audioPath: string) => {
+        if (audioRef.current) {
+          if (audioIsPlaying) {
             // Pause the audio
-            audioRef.current!.pause();
-        } else {
-            // Start playing the audio
-            setAudioSrc(audioPath);
-            console.log(audioPath);
-            audioRef.current!.play();
+            audioRef.current.pause();
+          } else {
+            // Set the audio source and play
+            audioRef.current.src = audioPath;
+            const playPromise = audioRef.current.play();
+    
+            // Handle promise to avoid the error
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  // Playback started successfully
+                })
+                .catch((error) => {
+                  console.error('Audio playback error:', error);
+                });
+            }
+          }
+          setAudioIsPlaying(!audioIsPlaying);
         }
-
-        // Toggle the play state
-        setIsPlaying(!isPlaying);
-    };
-
-    const audioPlayer = new Audio();
-
-    useEffect(() => {
-        // Set the audio source when it changes
-        if (audioSrc && audioRef.current) {
-            audioRef.current.src = audioSrc;
-        }
-    }, [audioSrc]);
-
-
+      };
 
     return (
         <>
@@ -296,7 +333,8 @@ const PlaylistDetails = () => {
                                                     colorScheme="teal"
                                                     mr={2}
                                                     onClick={() => {
-                                                        toggleAudio(`${AUDIO_BASE_URL}${item.bookp.audio_path.slice(17)}`);
+                                                        // Handle play button
+                                                        handlePlayButtonClick(`${AUDIO_BASE_URL}${item.bookp.audio_path.slice(17)}`)
                                                     }}
                                                 />
                                                 <IconButton
@@ -315,6 +353,9 @@ const PlaylistDetails = () => {
                             </Tbody>
                         </Table>
                     </TableContainer>
+
+                    {/* Audio Element */}
+                    <audio ref={audioRef} />
 
                     <Heading size="md" marginTop="5rem" marginBottom="1rem">Books you can add to the playlist</Heading>
 
