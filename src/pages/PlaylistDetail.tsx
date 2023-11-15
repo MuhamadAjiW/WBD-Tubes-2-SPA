@@ -141,10 +141,6 @@ const PlaylistDetails = () => {
                   )
               )
           );
-
-          
-
-          console.log(data.booksInPlaylist)
       }
     }
 
