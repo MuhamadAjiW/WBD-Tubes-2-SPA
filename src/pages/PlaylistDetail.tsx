@@ -32,7 +32,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiPlay } from "react-icons/fi";
 import Sidebar from "../components/Sidebar";
 import { useCookies } from "react-cookie";
-import { AUDIO_BASE_URL, REST_BASE_URL } from "../constants/constants";
+import { AUDIO_BASE_URL, IMAGE_BASE_URL, REST_BASE_URL } from "../constants/constants";
 
 interface IBookP {
   bookp_id: number;
@@ -80,10 +80,12 @@ const PlaylistDetails = () => {
   const [authorData, setAuthorData] = useState<IAuthor | null>(null);
   const [playlist_id, setPlaylistId] = useState(0);
   const [bookToDelete, setBookToDelete] = useState(0);
+  const [image_path, setImagePath] = useState<String>("https://bit.ly/dan-abramov")
 
   let rowCount = 1;
 
   let recommendedCount = 1;
+
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -121,26 +123,29 @@ const PlaylistDetails = () => {
     if (!response.ok) {
       console.error(`API request failed with status: ${response.status}`);
     } else {
-      const data = await response.json();
+          const data = await response.json();
 
-            console.log(data)
-            setPlaylistData(data.playlistData)
-            setPlaylistBooks(data.booksInPlaylist)
-            setRecommendedBooks(data.recommendationBooks)
-            setAuthorData(data.authorData)
-            setPlaylistId(data.playlistData.playlist_id)
+          console.log(data)
+          setPlaylistData(data.playlistData)
+          setPlaylistBooks(data.booksInPlaylist)
+          setRecommendedBooks(data.recommendationBooks)
+          setAuthorData(data.authorData)
+          setPlaylistId(data.playlistData.playlist_id)
+          setImagePath(`${IMAGE_BASE_URL}${data.playlistData.image_path.slice(17)}`)
 
-            // Filter out books that are already in the playlistBooks from recommendedBooks
-            setRecommendedBooks((prevRecommendedBooks) =>
-                prevRecommendedBooks.filter((item) =>
-                    !data.booksInPlaylist.some(
-                        (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
-                    )
-                )
-            );
+          // Filter out books that are already in the playlistBooks from recommendedBooks
+          setRecommendedBooks((prevRecommendedBooks) =>
+              prevRecommendedBooks.filter((item) =>
+                  !data.booksInPlaylist.some(
+                      (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
+                  )
+              )
+          );
 
-            console.log(data.booksInPlaylist)
-        }
+          
+
+          console.log(data.booksInPlaylist)
+      }
     }
 
 
@@ -296,7 +301,7 @@ const PlaylistDetails = () => {
           />
           <Flex flexDir="row" marginBottom="1rem">
             <Image
-              src="https://bit.ly/dan-abramov"
+              src={image_path}
               alt="Dan Abramov"
               borderRadius="30px"
               boxSize="150px"
