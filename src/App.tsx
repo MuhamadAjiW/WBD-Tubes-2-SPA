@@ -27,22 +27,22 @@ function App() {
             element={<RequireNoAuth element={<Register />} />}
           />
           {/* Protected */}
-          <Route path="/home" element={<RequireNoAuth element={<Home />} />} />
+          <Route path="/home" element={<RequireAuth element={<Home />} />} />
           <Route
             path="/books"
-            element={<RequireNoAuth element={<BookList />} />}
+            element={<RequireAuth element={<BookList />} />}
           />
           <Route
             path="/playlists"
-            element={<RequireNoAuth element={<Playlist />} />}
+            element={<RequireAuth element={<Playlist />} />}
           />
           <Route
             path="/subscribers"
-            element={<RequireNoAuth element={<Subscriber />} />}
+            element={<RequireAuth element={<Subscriber />} />}
           />
           <Route
             path="/playlistdetails/:id"
-            element={<RequireNoAuth element={<PlaylistDetails />} />}
+            element={<RequireAuth element={<PlaylistDetails />} />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
