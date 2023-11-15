@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -22,7 +21,6 @@ import {
   ModalFooter,
   FormLabel,
   Input,
-  InputGroup,
   FormControl,
   Textarea,
 } from "@chakra-ui/react";
@@ -33,14 +31,7 @@ import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
-
-interface IPlaylist {
-  playlist_id: number;
-  title: string;
-  description: string;
-  image_path: string;
-  author_id: number;
-}
+import { IPlaylist } from "@utils/interfaces/IPlaylist";
 
 const Playlist = () => {
   const [cookies, setCookie] = useCookies(["token"]);

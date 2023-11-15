@@ -1,20 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import _ from "lodash";
 import {
   Heading,
   Flex,
   IconButton,
-  Box,
   Image,
   Text,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Icon,
   Modal,
@@ -96,29 +93,33 @@ const PlaylistDetails = () => {
     if (!response.ok) {
       console.error(`API request failed with status: ${response.status}`);
     } else {
-      const data = await response.json();
+      const serverResponse: ServerResponse = await response.json();
 
-      console.log(data);
-      setPlaylistData(data.playlistData);
-      setPlaylistBooks(data.booksInPlaylist);
-      setRecommendedBooks(data.recommendationBooks);
-      setAuthorData(data.authorData);
-      setPlaylistId(data.playlistData.playlist_id);
-      setImagePath(
-        `${IMAGE_BASE_URL}${data.playlistData.image_path.slice(17)}`
-      );
-
-      // Filter out books that are already in the playlistBooks from recommendedBooks
-      setRecommendedBooks((prevRecommendedBooks) =>
-        prevRecommendedBooks.filter(
-          (item) =>
-            !data.booksInPlaylist.some(
-              (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
-            )
-        )
-      );
-
-      console.log(data.booksInPlaylist);
+      if(serverResponse.valid){
+        console.log(serverResponse.data);
+        setPlaylistData(serverResponse.data.playlistData);
+        setPlaylistBooks(serverResponse.data.booksInPlaylist);
+        setRecommendedBooks(serverResponse.data.recommendationBooks);
+        setAuthorData(serverResponse.data.authorData);
+        setPlaylistId(serverResponse.data.playlistData.playlist_id);
+        setImagePath(
+          `${IMAGE_BASE_URL}${serverResponse.data.playlistData.image_path.slice(17)}`
+        );
+  
+        // Filter out books that are already in the playlistBooks from recommendedBooks
+        setRecommendedBooks((prevRecommendedBooks) =>
+          prevRecommendedBooks.filter(
+            (item) =>
+              !serverResponse.data.booksInPlaylist.some(
+                (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
+              )
+          )
+        );
+  
+        console.log(serverResponse.data.booksInPlaylist);
+      } else{
+        console.log("No books yet")
+      }
     }
   };
 

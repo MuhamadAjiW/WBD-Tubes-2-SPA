@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { IoPawOutline } from "react-icons/io5";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { REST_BASE_URL } from "@constants/constants";
 import { useCookies } from "react-cookie";
 import {
   Box,
@@ -11,10 +9,8 @@ import {
   Button,
   Stack,
   Collapse,
-  Icon,
   Popover,
   PopoverTrigger,
-  PopoverContent,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
@@ -22,16 +18,8 @@ import {
 import {
   HamburgerIcon,
   CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
 } from "@chakra-ui/icons";
-interface IAuthor {
-  author_id: number;
-  bio: string;
-  email: string;
-  name: string;
-  username: string;
-}
+
 interface NavItem {
   label: string;
   href?: string;

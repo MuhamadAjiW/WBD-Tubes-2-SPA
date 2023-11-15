@@ -1,5 +1,5 @@
-import { ChakraProvider, Flex } from "@chakra-ui/react";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { RequireAuth, RequireNoAuth } from "@utils/AuthUtil";
 import Login from "@pages/Login/Login";

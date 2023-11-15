@@ -1,36 +1,24 @@
-import React, {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import {
     Flex,
     Text,
-    IconButton,
     Divider,
     Avatar,
     Heading,
-    Center
 } from '@chakra-ui/react'
 
 import {
-    FiMenu,
     FiBook,
     FiList,
     FiUser,
-    FiSettings,
     FiHome
 } from 'react-icons/fi'
 
-import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { REST_BASE_URL } from '@constants/constants'
 import { useCookies } from 'react-cookie'
-
-interface IAuthor {
-    author_id: number;
-    bio: string;
-    email: string;
-    name: string;
-    username: string;
-}
+import { IAuthor } from '@utils/interfaces/IAuthor';
 
 export default function Sidebar() {
     const [sideSize, changesideSize] = useState("large")

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -28,26 +27,11 @@ import {
 } from "@chakra-ui/react";
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import { color } from "framer-motion";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
-import axios from "axios";
-
-interface IBookP {
-  bookp_id: number;
-  title: string;
-  genre: string;
-  synopsis: string;
-  release_date: Date;
-  word_count: number;
-  duration: number;
-  graphic_cntn: boolean;
-  image_path: string;
-  audio_path: string;
-  author_id: number;
-}
+import { IBookP } from "@utils/interfaces/IBookP";
 
 const BookList = () => {
 

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -20,23 +19,15 @@ import {
   ModalBody,
   Button,
   ModalFooter,
-  background,
 } from "@chakra-ui/react";
 
-import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "@constants/constants";
 import { fetchPendingSubscribers, fetchSubscribers } from './SubscriberUtil';
 import { getAccountID } from "@utils/AuthUtil";
-
-interface IUser {
-  user_id: number;
-  bio: string;
-  email: string;
-  name: string;
-  username: string;
-}
+import { IUser } from "@utils/interfaces/IUser";
 
 const Subscriber = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Link, useNavigate } from 'react-router-dom';
 // import { FaGoogle } from "react-icons/fa";
@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 import { useCookies } from "react-cookie";
 import { validateEmailAndPassword, loginRequest } from './LoginUtil';
-import { getAccountID } from "@utils/AuthUtil";
 
 export default function Login() {
   const navigate = useNavigate();
