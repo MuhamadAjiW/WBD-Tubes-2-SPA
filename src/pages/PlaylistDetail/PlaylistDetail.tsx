@@ -37,42 +37,10 @@ import {
   IMAGE_BASE_URL,
   REST_BASE_URL,
 } from "@constants/constants";
-
-interface IBookP {
-  bookp_id: number;
-  title: string;
-  genre: string;
-  synopsis: string;
-  release_date: Date;
-  word_count: number;
-  duration: number;
-  graphic_cntn: boolean;
-  image_path: string;
-  audio_path: string;
-  author_id: number;
-}
-
-interface IPlaylistBook {
-  bookp_id: number;
-  playlist_id: number;
-  bookp: IBookP;
-}
-
-interface IPlaylist {
-  playlist_id: number;
-  title: string;
-  description: string;
-  image_path: string;
-  author_id: number;
-}
-
-interface IAuthor {
-  author_id: number;
-  bio: string;
-  email: string;
-  name: string;
-  username: string;
-}
+import { IPlaylistBook } from "@utils/interfaces/IPlaylistBook";
+import { IBookP } from "@utils/interfaces/IBookP";
+import { IAuthor } from "@utils/interfaces/IAuthor";
+import { IPlaylist } from "@utils/interfaces/IPlaylist";
 
 const PlaylistDetails = () => {
   const navigate = useNavigate();
@@ -84,7 +52,7 @@ const PlaylistDetails = () => {
   const [authorData, setAuthorData] = useState<IAuthor | null>(null);
   const [playlist_id, setPlaylistId] = useState(0);
   const [bookToDelete, setBookToDelete] = useState(0);
-  const [image_path, setImagePath] = useState<String>(
+  const [image_path, setImagePath] = useState<string>(
     "https://bit.ly/dan-abramov"
   );
 
@@ -95,7 +63,7 @@ const PlaylistDetails = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Function to open delete modal
-  const openDeleteModal = (bookp_id) => {
+  const openDeleteModal = (bookp_id: number) => {
     setIsDeleteModalOpen(true);
     setBookToDelete(bookp_id);
   };
@@ -154,7 +122,7 @@ const PlaylistDetails = () => {
     }
   };
 
-  const addPlaylistBook = async (bookp_id) => {
+  const addPlaylistBook = async (bookp_id: number) => {
     try {
       const token = cookies.token;
 
@@ -207,7 +175,7 @@ const PlaylistDetails = () => {
     }
   };
 
-  const deletePlaylistBook = async (bookp_id) => {
+  const deletePlaylistBook = async (bookp_id: number) => {
     try {
       const token = cookies.token;
 
