@@ -1,15 +1,15 @@
-import "./App.css";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import BookList from "./pages/Booklist";
-import Playlist from "./pages/Playlist";
-import Subscriber from "./pages/Subscriber";
-import PlaylistDetails from "./pages/PlaylistDetail";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import { RequireAuth, RequireNoAuth } from "./middlewares/AuthMiddleware";
-import NotFound from "./pages/NotFound";
+
+import { RequireAuth, RequireNoAuth } from "@utils/AuthUtil";
+import Login from "@pages/Login/Login";
+import Register from "@pages/Register/Register";
+import BookList from "@pages/Booklist/Booklist";
+import Playlist from "@pages/Playlist/Playlist";
+import Subscriber from "@pages/Subscriber/Subscriber";
+import PlaylistDetails from "@pages/PlaylistDetail/PlaylistDetail";
+import NotFound from "@pages/Error/NotFound";
+import Home from "@pages/Home/Home";
 
 function App() {
   return (

@@ -30,13 +30,13 @@ import {
 import { ArrowBackIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiPlay } from "react-icons/fi";
-import TopBar from "../components/TopBar";
+import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
 import {
   AUDIO_BASE_URL,
   IMAGE_BASE_URL,
   REST_BASE_URL,
-} from "../constants/constants";
+} from "@constants/constants";
 
 interface IBookP {
   bookp_id: number;

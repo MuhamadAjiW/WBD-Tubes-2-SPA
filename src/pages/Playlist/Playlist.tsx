@@ -29,9 +29,9 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-import TopBar from "../components/TopBar";
+import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "../constants/constants";
+import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 
 interface IPlaylist {

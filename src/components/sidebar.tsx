@@ -21,7 +21,7 @@ import {
 import {IoPawOutline} from 'react-icons/io5'
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { REST_BASE_URL } from '../constants/constants'
+import { REST_BASE_URL } from '@constants/constants'
 import { useCookies } from 'react-cookie'
 
 interface IAuthor {

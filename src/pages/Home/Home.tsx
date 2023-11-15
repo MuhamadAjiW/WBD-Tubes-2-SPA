@@ -1,8 +1,21 @@
 import { Box, Heading, Container, Text, Stack, Image } from "@chakra-ui/react";
-import logoImage from "../assets/logo.svg"; // Assuming this is the correct path to your image
-import TopBar from "../components/TopBar";
+import logoImage from "@assets/logo.svg"; // Assuming this is the correct path to your image
+import TopBar from "@components/TopBar";
+import { useEffect } from "react";
+import { getAccountID } from "@utils/AuthUtil";
+import { useCookies } from "react-cookie";
 
 const Home = () => {
+  // TODO: Delete later (Testing purposes)
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  useEffect(() => {
+    getAccountID(cookies.token)
+      .then((result) => {
+        console.log(result['data']);
+      });
+  }, [])
+  
   return (
     <>
       <Box>

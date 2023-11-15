@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IoPawOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
-import { REST_BASE_URL } from "../constants/constants";
+import { REST_BASE_URL } from "@constants/constants";
 import { useCookies } from "react-cookie";
 import {
   Box,
@@ -41,10 +41,9 @@ interface NavItem {
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
-  const [author, setAuthor] = useState<IAuthor | null>(null);
   const history = useNavigate();
   const location = useLocation();
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   let currentRoute = location.pathname.slice(1);
 
   if (currentRoute.includes("playlist")) {
@@ -58,32 +57,11 @@ export default function WithSubnavigation() {
     setactiveSideItem(title);
     history(`/${title}`);
   };
+  const logout = () => {
+    removeCookie('token',{path:'/'});
+    window.location.href = "/login";
+  }
 
-  const fetchAuthor = async () => {
-    const token = cookies.token;
-
-    // Ntar idnya bakal fetch ke /token/id dlu
-    const response = await fetch(`${REST_BASE_URL}/authors/1`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: token ?? "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-
-      setAuthor(data.data);
-    }
-  };
-
-  useEffect(() => {
-    fetchAuthor();
-  }, []);
   const DesktopNav = () => {
     const linkColor = useColorModeValue("gray.600", "gray.200");
     const linkHoverColor = useColorModeValue("gray.800", "white");
@@ -261,6 +239,7 @@ export default function WithSubnavigation() {
             href={"#"}
             color={"white"}
             textUnderlineOffset={2}
+            onClick={logout}
           >
             Log Out
           </Button>

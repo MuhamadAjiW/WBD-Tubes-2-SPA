@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 // import { FaGoogle } from "react-icons/fa";
-import backgroundImage from "../assets/logo.svg";
+import backgroundImage from "@assets/logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   Box,
@@ -16,26 +16,34 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { REST_BASE_URL } from "../constants/constants";
-import { useCookies } from "react-cookie";
+import { REST_BASE_URL } from "@constants/constants";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [fullname, setFullname] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [fullnameError, setFullnameError] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [cookies, setCookie] = useCookies(['token']);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(event.target.value);
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(event.target.value);
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setUsername(event.target.value);
+  const handleFullnameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setFullname(event.target.value);
 
   const validateEmailAndPassword = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^.{8,}$/;
+    const usernameRegex = /^[ -~]+$/;
+    const fullnameRegex = /^[ -~]+$/;
     let valid = true;
     if (!emailRegex.test(email)) {
       setEmailError("Email format is invalid");
@@ -49,12 +57,26 @@ export default function Login() {
     } else {
       setPasswordError("");
     }
+    if (!usernameRegex.test(username)) {
+      console.log(username);
+      setUsernameError("Username contains non ASCII characters");
+      valid = false;
+    } else {
+      setUsernameError("");
+    }
+    if (!fullnameRegex.test(fullname)) {
+      console.log(fullname);
+      setFullnameError("Fullname contains non ASCII characters");
+      valid = false;
+    } else {
+      setFullnameError("");
+    }
     return valid;
   };
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     if (validateEmailAndPassword()) {
-      const response = await fetch(`${REST_BASE_URL}/token`, {
+        const response = await fetch(`${REST_BASE_URL}/authors`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -62,7 +84,10 @@ export default function Login() {
           },
           body: JSON.stringify({
             email: email,
+            username: username,
             password: password,
+            name: fullname,
+            bio: "This user does not have a bio",
           })
       });
       
@@ -73,13 +98,9 @@ export default function Login() {
 
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType?.includes("application/json")) {
-          const data = await response.json();
-          console.log(data);
-          if(response.status == 200){
+          if(response.status == 201){
             console.log("Success");
-            setCookie('token', data.data);
-            
-            navigate('/home');
+            navigate('/login');
           } else{
             console.log("Failed");
             // TODO: Add interactive errors
@@ -106,8 +127,8 @@ export default function Login() {
       }}
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack marginTop={"5vh"}>
-          <Heading fontSize={"4xl"}>Welcome Back 👋</Heading>
+        <Stack marginTop={"1vh"}>
+          <Heading fontSize={"4xl"}>Welcome To Baca.a 👋</Heading>
           {/* <Button
             leftIcon={<FaGoogle />}
             colorScheme="black"
@@ -115,7 +136,7 @@ export default function Login() {
             size="md"
             mt={4}
             _hover={{ bg: "white" }}
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
             Sign in with Google
           </Button> */}
@@ -148,19 +169,41 @@ export default function Login() {
             </InputGroup>
             {passwordError && <Text color="gray">{passwordError}</Text>}
           </FormControl>
+          <FormControl id="username">
+            <FormLabel>Username</FormLabel>
+            <Input
+              type="text"
+              value={username}
+              onChange={handleUsernameChange}
+              bg="white"
+              placeholder="Masukkan username"
+            />
+            {usernameError && <Text color="gray">{usernameError}</Text>}
+          </FormControl>
+          <FormControl id="fullname">
+            <FormLabel>Fullname</FormLabel>
+            <Input
+              type="text"
+              value={fullname}
+              onChange={handleFullnameChange}
+              bg="white"
+              placeholder="Masukkan fullname"
+            />
+            {fullnameError && <Text color="gray">{usernameError}</Text>}
+          </FormControl>
           <Button
             colorScheme="yellow"
             variant="solid"
             size="md"
             mt={4}
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
-            Login
+            Register
           </Button>
-          <Text fontSize={"md"} color={"gray.600"} mt={4}>
-            Don't have an account?{" "}
-            <Link to="/register" style={{ color: "black" }}>
-              Register
+          <Text fontSize={"md"} color={"gray.600"} mt={0}>
+            Already have an account?{" "}
+            <Link to="/login" style={{ color: "black" }}>
+              Login
             </Link>{" "}
           </Text>
         </Stack>

@@ -24,10 +24,11 @@ import {
 } from "@chakra-ui/react";
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import { color } from "framer-motion";
-import TopBar from "../components/TopBar";
+import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "../constants/constants";
+import { REST_BASE_URL } from "@constants/constants";
+import { fetchPendingSubscribers, fetchSubscribers } from './SubscriberUtil';
+import { getAccountID } from "@utils/AuthUtil";
 
 interface IUser {
   user_id: number;
@@ -38,8 +39,7 @@ interface IUser {
 }
 
 const Subscriber = () => {
-  const [cookies, setCookie] = useCookies(["token"]);
-
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const [subscriberData, setSubscriberData] = useState<IUser[]>([]);
   const [author_id, setAuthorId] = useState(0);
   const [user_id, setSubscriberId] = useState(0);
@@ -51,64 +51,26 @@ const Subscriber = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [subscriberUsername, setSubscriberUsername] = useState("");
 
-  // Fetch author subscribers
-  const fetchSubscribers = async () => {
-    const token = cookies.token;
-
-    const response = await fetch(
-      `${REST_BASE_URL}/authors/${author_id}/subscribers`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: token ?? "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-
-      console.log(data);
-      setSubscriberData(data.data);
-    }
-  };
-
-  // Fetch author pending subscribers
-  const fetchPendingSubscribers = async () => {
-    const token = cookies.token;
-
-    const response = await fetch(
-      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: token ?? "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-
-      console.log(data);
-      setPendingSubscriber(data.data);
-    }
-  };
-
   useEffect(() => {
-    fetchSubscribers();
-  }, [])
+    getAccountID(cookies.token).then((result) => {
+      if(!result.valid){
+        removeCookie('token',{path:'/'});
+        window.location.href = "/login";
+        return;
+      }
 
-  useEffect(() => {
-    fetchPendingSubscribers();
+      fetchSubscribers(result.data).then((activeSubscribers) => {
+        console.log(activeSubscribers);
+        if(activeSubscribers.valid){
+          setSubscriberData(activeSubscribers.data);
+        }
+      });
+      fetchPendingSubscribers(result.data).then((pendingSubscribers) => {
+        if(pendingSubscribers.valid){
+          setPendingSubscriber(pendingSubscribers.data);
+        }
+      });
+    })
   }, [])
 
   // Function to open delete modal

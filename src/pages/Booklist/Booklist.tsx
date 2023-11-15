@@ -29,9 +29,9 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from "framer-motion";
-import TopBar from "../components/TopBar";
+import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "../constants/constants";
+import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 import axios from "axios";
 
