@@ -29,7 +29,7 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import TopBar from "../components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "../constants/constants";
 import { toast } from "react-toastify";
@@ -261,13 +261,8 @@ const Playlist = () => {
 
   return (
     <>
-      <Sidebar />
-      <Flex
-        flex="1"
-        p="20px"
-        flexDirection="column"
-        ml={{ base: "0", lg: "20%" }}
-      >
+      <TopBar />
+      <Flex flex="1" p="20px" flexDirection="column">
         <Flex
           flex="1"
           p="20px"
@@ -283,49 +278,27 @@ const Playlist = () => {
             icon={<AddIcon />}
             variant="outline"
             colorScheme="green"
-            mt={{ base: "2", md: "0" }}
+            mr={2}
             onClick={() => {
               openAddModal();
             }}
-            marginLeft={{ md: "2", base: "0" }}
           />
         </Flex>
         <TableContainer>
-          <Table
-            variant="striped"
-            size="md"
-            colorScheme="gray"
-            overflowX="auto"
-          >
+          <Table variant="striped" size="md" colorScheme="gray">
             <TableCaption>Author's playlists</TableCaption>
             <Thead>
               <Tr>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   No.
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Title
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Description
                 </Th>
-                <Th
-                  textAlign="center"
-                  verticalAlign="middle"
-                  p={{ base: 1, md: 2 }}
-                >
+                <Th textAlign="center" verticalAlign="middle">
                   Action
                 </Th>
               </Tr>
@@ -333,61 +306,45 @@ const Playlist = () => {
             <Tbody>
               {playlistData.map((item) => (
                 <Tr key={item.title}>
-                  <Td
-                    textAlign="center"
-                    verticalAlign="middle"
-                    p={{ base: 1, md: 2 }}
-                  >
+                  <Td textAlign="center" verticalAlign="middle">
                     {rowCount++}
                   </Td>
-                  <Td
-                    textAlign="center"
-                    verticalAlign="middle"
-                    p={{ base: 1, md: 2 }}
-                  >
+                  <Td textAlign="center" verticalAlign="middle">
                     {item.title}
                   </Td>
-                  <Td
-                    textAlign="center"
-                    verticalAlign="middle"
-                    p={{ base: 1, md: 2 }}
-                  >
+                  <Td textAlign="center" verticalAlign="middle">
                     {item.description}
                   </Td>
-                  <Td>
-                    <Flex
-                      direction={{ base: "column", md: "row" }}
-                      align="center"
-                      justifyContent={{ base: "center", md: "flex-start" }}
-                    >
+                  <Td textAlign="center" verticalAlign="middle">
+                    <Flex align="center" justify="center">
                       <IconButton
                         icon={<ViewIcon />}
                         variant="outline"
                         colorScheme="blue"
+                        mr={2}
                         onClick={() => {
-                          navigate(`/playlistdetails/${item.id}`, {
+                          navigate(`/playlistdetails/${item.playlist_id}`, {
                             state: { playlist: item },
                           });
                         }}
-                        mb={{ base: 2, md: 0 }}
                       />
                       <IconButton
                         icon={<EditIcon />}
                         variant="outline"
                         colorScheme="teal"
+                        mr={2}
                         onClick={() => {
                           openEditModal(item);
                         }}
-                        mb={{ base: 2, md: 0 }}
                       />
                       <IconButton
                         icon={<DeleteIcon />}
                         variant="outline"
                         colorScheme="red"
+                        mr={2}
                         onClick={() => {
-                          openDeleteModal(item.title);
+                          openDeleteModal(item);
                         }}
-                        mb={{ base: 2, md: 0 }}
                       />
                     </Flex>
                   </Td>

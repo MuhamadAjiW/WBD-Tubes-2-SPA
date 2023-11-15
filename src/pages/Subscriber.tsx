@@ -25,46 +25,206 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from "framer-motion";
-import Sidebar from "../components/Sidebar";
+import TopBar from "../components/TopBar";
+import { useCookies } from "react-cookie";
+import { REST_BASE_URL } from "../constants/constants";
+
+interface IUser {
+  user_id: number;
+  bio: string;
+  email: string;
+  name: string;
+  username: string;
+}
 
 const Subscriber = () => {
-  const dummyData = [
-    {
-      username: "user1",
-      email: "user1@example.com",
-    },
-    {
-      username: "user2",
-      email: "user2@example.com",
-    },
-    {
-      username: "user3",
-      email: "user3@example.com",
-    },
-    {
-      username: "user4",
-      email: "user4@example.com",
-    },
-    {
-      username: "user5",
-      email: "user5@example.com",
-    },
-  ];
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  const [subscriberData, setSubscriberData] = useState<IUser[]>([]);
+  const [author_id, setAuthorId] = useState(0);
+  const [user_id, setSubscriberId] = useState(0);
+  const [pendingSubscriber, setPendingSubscriber] = useState<IUser[]>([]);
+  const [status, setStatus] = useState<String>("");
 
   let rowCount = 1;
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [subscriberUsername, setSubscriberUsername] = useState("");
 
+  // Fetch author subscribers
+  const fetchSubscribers = async () => {
+    const token = cookies.token;
+
+    const response = await fetch(
+      `${REST_BASE_URL}/authors/${author_id}/subscribers`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token ?? "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status}`);
+    } else {
+      const data = await response.json();
+
+      console.log(data);
+      setSubscriberData(data.data);
+    }
+  };
+
+  // Fetch author pending subscribers
+  const fetchPendingSubscribers = async () => {
+    const token = cookies.token;
+
+    const response = await fetch(
+      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token ?? "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status}`);
+    } else {
+      const data = await response.json();
+
+      console.log(data);
+      setPendingSubscriber(data.data);
+    }
+  };
+
   // Function to open delete modal
-  const openDeleteModal = (username) => {
+  const openDeleteModal = (item) => {
     setIsDeleteModalOpen(true);
-    setSubscriberUsername(username);
+    setSubscriberUsername(item.username);
+    setSubscriberId(item.user_id);
   };
 
   // Function to close delete modal
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
+    setSubscriberUsername("");
+    setSubscriberId(0);
+  };
+
+  // Delete subscribers
+  const deleteSubscriber = async () => {
+    const token = cookies.token;
+
+    const body = {
+      author_id,
+      user_id,
+    };
+
+    const response = await fetch(
+      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token ?? "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status}`);
+    } else {
+      console.log("Subscriber deleted successfully");
+
+      setSubscriberData((prevSubscribers) =>
+        prevSubscribers.filter((item) => item.user_id !== user_id)
+      );
+
+      closeDeleteModal();
+    }
+  };
+
+  const rejectSubscriber = async () => {
+    const token = cookies.token;
+
+    const body = {
+      author_id,
+      user_id,
+      status,
+    };
+
+    const response = await fetch(
+      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: token ?? "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status}`);
+    } else {
+      console.log("Subscriber rejected successfully");
+
+      setPendingSubscriber((prevPendingSubscribers) =>
+        prevPendingSubscribers.filter((item) => item.user_id !== user_id)
+      );
+    }
+  };
+
+  const acceptSubscriber = async () => {
+    const token = cookies.token;
+
+    const body = {
+      author_id,
+      user_id,
+      status,
+    };
+
+    const response = await fetch(
+      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: token ?? "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status}`);
+    } else {
+      console.log("Subscriber rejected successfully");
+
+      setSubscriberData((prevSubscribers) => {
+        const acceptedSubscriber = pendingSubscriber.find(
+          (item) => item.user_id === user_id
+        );
+
+        if (acceptedSubscriber) {
+          return [...prevSubscribers, acceptedSubscriber];
+        }
+
+        return prevSubscribers;
+      });
+
+      setPendingSubscriber((prevPendingSubscribers) =>
+        prevPendingSubscribers.filter((item) => item.user_id !== user_id)
+      );
+    }
   };
 
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
@@ -77,35 +237,14 @@ const Subscriber = () => {
   // Function to close pending request modal
   const closeSubscribeModal = () => {
     setIsSubscribeModalOpen(false);
+    setStatus("");
+    setSubscriberId(0);
   };
-
-  const subscribeDummyData = [
-    {
-      username: "user6",
-    },
-    {
-      username: "user7",
-    },
-    {
-      username: "user8",
-    },
-    {
-      username: "user9",
-    },
-    {
-      username: "user10",
-    },
-  ];
 
   return (
     <>
-      <Sidebar />
-      <Flex
-        flex="1"
-        p="20px"
-        flexDirection="column"
-        ml={{ md: "13%", base: "0" }}
-      >
+      <TopBar />
+      <Flex flex="1" p="20px" flexDirection="column">
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           justifyContent={{ md: "space-between" }}
@@ -147,8 +286,8 @@ const Subscriber = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {dummyData.map((item) => (
-                <Tr key={item.title}>
+              {subscriberData.map((item) => (
+                <Tr key={item.user_id}>
                   <Td textAlign="center" verticalAlign="middle">
                     {rowCount++}
                   </Td>
@@ -165,7 +304,7 @@ const Subscriber = () => {
                       colorScheme="red"
                       mr={2}
                       onClick={() => {
-                        openDeleteModal(item.username);
+                        openDeleteModal(item);
                       }}
                     />
                   </Td>
@@ -194,7 +333,7 @@ const Subscriber = () => {
             <ModalFooter textAlign="center" verticalAlign="middle">
               <Flex flexDir="row" alignItems="center" w="100%">
                 <Button
-                  onClick={closeDeleteModal}
+                  onClick={deleteSubscriber}
                   style={{ color: "white" }}
                   backgroundColor="red.400"
                   w="50%"
@@ -241,14 +380,19 @@ const Subscriber = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {subscribeDummyData.map((item) => (
-                    <Tr key={item.username}>
+                  {pendingSubscriber.map((item) => (
+                    <Tr key={item.user_id}>
                       <Td textAlign="center" verticalAlign="middle">
                         {item.username}
                       </Td>
                       <Td textAlign="center" verticalAlign="middle">
                         <Button
-                          onClick={closeSubscribeModal}
+                          onClick={() => {
+                            setStatus("ACCEPTED");
+                            setSubscriberId(item.user_id);
+                            acceptSubscriber();
+                            closeSubscribeModal();
+                          }}
                           style={{ color: "white" }}
                           backgroundColor="blue.500"
                           ml={3}
@@ -257,7 +401,12 @@ const Subscriber = () => {
                           Confirm
                         </Button>
                         <Button
-                          onClick={closeSubscribeModal}
+                          onClick={() => {
+                            setStatus("DELETED");
+                            setSubscriberId(item.user_id);
+                            rejectSubscriber();
+                            closeSubscribeModal();
+                          }}
                           style={{ color: "white" }}
                           backgroundColor="red.400"
                           w="30%"

@@ -29,7 +29,7 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from "framer-motion";
-import Sidebar from "../components/Sidebar";
+import TopBar from "../components/TopBar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "../constants/constants";
 import { toast } from "react-toastify";
@@ -50,6 +50,38 @@ interface IBookP {
 }
 
 const BookList = () => {
+  // const dummyData = [
+  //   {
+  //     title: "Judul Buku 1",
+  //     word_count: 10000,
+  //     duration: 40,
+  //     release_date: "2023-10-20",
+  //   },
+  //   {
+  //     title: "Judul Buku 2",
+  //     word_count: 2000,
+  //     duration: 20,
+  //     release_date: "2023-10-30",
+  //   },
+  //   {
+  //     title: "Judul Buku 3",
+  //     word_count: 100,
+  //     duration: 10,
+  //     release_date: "2023-10-2",
+  //   },
+  //   {
+  //     title: "Judul Buku 4",
+  //     word_count: 500,
+  //     duration: 20,
+  //     release_date: "2023-10-5",
+  //   },
+  //   {
+  //     title: "Judul Buku 5",
+  //     word_count: 8000,
+  //     duration: 40,
+  //     release_date: "2023-10-26",
+  //   },
+  // ];
   const [cookies, setCookie] = useCookies(["token"]);
   const [bookPData, setBookPData] = useState<IBookP[]>([]);
   const [editedBook, setEditedBook] = useState<IBookP>();
@@ -340,13 +372,8 @@ const BookList = () => {
 
   return (
     <>
-      <Sidebar />
-      <Flex
-        flex="1"
-        p="20px"
-        flexDirection="column"
-        ml={{ base: "0", lg: "20%" }}
-      >
+      <TopBar />
+      <Flex flex="1" p="20px" flexDirection="column">
         <Flex flexDir="column">
           <Flex
             flex="1"
@@ -363,38 +390,57 @@ const BookList = () => {
               icon={<AddIcon />}
               variant="outline"
               colorScheme="green"
-              mr={2}
+              mt={{ base: "2", md: "0" }}
               onClick={() => {
                 openAddModal();
               }}
             />
           </Flex>
-          <TableContainer>
-            <Table
-              variant="striped"
-              size="md"
-              colorScheme="gray"
-              overflowX="auto"
-            >
+          <TableContainer overflowX="auto" mt="4">
+            <Table variant="striped" size="sm" colorScheme="gray">
               <TableCaption>Author's published book</TableCaption>
               <Thead>
                 <Tr>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     No.
                   </Th>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     Title
                   </Th>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     Word Count
                   </Th>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     Duration
                   </Th>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     Release Date
                   </Th>
-                  <Th textAlign="center" verticalAlign="middle">
+                  <Th
+                    textAlign="center"
+                    verticalAlign="middle"
+                    style={{ padding: "4px", minWidth: 0 }}
+                  >
                     Action
                   </Th>
                 </Tr>
@@ -418,24 +464,30 @@ const BookList = () => {
                       {item.release_date.slice(0, 10)}
                     </Td>
                     <Td textAlign="center" verticalAlign="middle">
-                      <IconButton
-                        icon={<EditIcon />}
-                        variant="outline"
-                        colorScheme="teal"
-                        mr={2}
-                        onClick={() => {
-                          openEditModal(item);
-                        }}
-                      />
-                      <IconButton
-                        icon={<DeleteIcon />}
-                        variant="outline"
-                        colorScheme="red"
-                        mr={2}
-                        onClick={() => {
-                          openDeleteModal(item);
-                        }}
-                      />
+                      <Flex
+                        direction={{ base: "column", md: "row" }}
+                        align={{ base: "center", md: "initial" }}
+                        justify="center"
+                      >
+                        <IconButton
+                          icon={<EditIcon />}
+                          variant="outline"
+                          colorScheme="teal"
+                          mr={2}
+                          onClick={() => {
+                            openEditModal(item);
+                          }}
+                        />
+                        <IconButton
+                          icon={<DeleteIcon />}
+                          variant="outline"
+                          colorScheme="red"
+                          mr={2}
+                          onClick={() => {
+                            openDeleteModal(item);
+                          }}
+                        />
+                      </Flex>
                     </Td>
                   </Tr>
                 ))}
