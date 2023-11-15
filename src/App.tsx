@@ -17,15 +17,33 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Public */}
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<RequireNoAuth element={<Login />} />} />
+          <Route
+            path="/login"
+            element={<RequireNoAuth element={<Login />} />}
+          />
+          <Route
+            path="/register"
+            element={<RequireNoAuth element={<Register />} />}
+          />
           {/* Protected */}
-          <Route path="/home" element={<Home />} />
-          <Route path="/books" element={<BookList />} />
-          <Route path="/playlists" element={<Playlist />} />
-          <Route path="/subscribers" element={<Subscriber />} />
-          <Route path="/playlistdetails/:id" element={<PlaylistDetails />} />
+          <Route path="/home" element={<RequireNoAuth element={<Home />} />} />
+          <Route
+            path="/books"
+            element={<RequireNoAuth element={<BookList />} />}
+          />
+          <Route
+            path="/playlists"
+            element={<RequireNoAuth element={<Playlist />} />}
+          />
+          <Route
+            path="/subscribers"
+            element={<RequireNoAuth element={<Subscriber />} />}
+          />
+          <Route
+            path="/playlistdetails/:id"
+            element={<RequireNoAuth element={<PlaylistDetails />} />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
