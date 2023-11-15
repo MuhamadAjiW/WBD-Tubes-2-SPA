@@ -50,41 +50,9 @@ interface IBookP {
 }
 
 const BookList = () => {
-  // const dummyData = [
-  //   {
-  //     title: "Judul Buku 1",
-  //     word_count: 10000,
-  //     duration: 40,
-  //     release_date: "2023-10-20",
-  //   },
-  //   {
-  //     title: "Judul Buku 2",
-  //     word_count: 2000,
-  //     duration: 20,
-  //     release_date: "2023-10-30",
-  //   },
-  //   {
-  //     title: "Judul Buku 3",
-  //     word_count: 100,
-  //     duration: 10,
-  //     release_date: "2023-10-2",
-  //   },
-  //   {
-  //     title: "Judul Buku 4",
-  //     word_count: 500,
-  //     duration: 20,
-  //     release_date: "2023-10-5",
-  //   },
-  //   {
-  //     title: "Judul Buku 5",
-  //     word_count: 8000,
-  //     duration: 40,
-  //     release_date: "2023-10-26",
-  //   },
-  // ];
+
   const [cookies, setCookie] = useCookies(["token"]);
   const [bookPData, setBookPData] = useState<IBookP[]>([]);
-  const [editedBook, setEditedBook] = useState<IBookP>();
 
   // Fetch Author Books
   const fetchBookP = async () => {

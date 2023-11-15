@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Thead,
@@ -102,6 +102,14 @@ const Subscriber = () => {
       setPendingSubscriber(data.data);
     }
   };
+
+  useEffect(() => {
+    fetchSubscribers();
+  }, [])
+
+  useEffect(() => {
+    fetchPendingSubscribers();
+  }, [])
 
   // Function to open delete modal
   const openDeleteModal = (item) => {
