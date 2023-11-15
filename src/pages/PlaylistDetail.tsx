@@ -30,13 +30,9 @@ import {
 import { ArrowBackIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiPlay } from "react-icons/fi";
-import TopBar from "../components/TopBar";
+import Sidebar from "../components/Sidebar";
 import { useCookies } from "react-cookie";
-import {
-  AUDIO_BASE_URL,
-  IMAGE_BASE_URL,
-  REST_BASE_URL,
-} from "../constants/constants";
+import { AUDIO_BASE_URL, IMAGE_BASE_URL, REST_BASE_URL } from "../constants/constants";
 
 interface IBookP {
   bookp_id: number;
@@ -84,13 +80,12 @@ const PlaylistDetails = () => {
   const [authorData, setAuthorData] = useState<IAuthor | null>(null);
   const [playlist_id, setPlaylistId] = useState(0);
   const [bookToDelete, setBookToDelete] = useState(0);
-  const [image_path, setImagePath] = useState<String>(
-    "https://bit.ly/dan-abramov"
-  );
+  const [image_path, setImagePath] = useState<String>("https://bit.ly/dan-abramov")
 
   let rowCount = 1;
 
   let recommendedCount = 1;
+
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -128,29 +123,31 @@ const PlaylistDetails = () => {
     if (!response.ok) {
       console.error(`API request failed with status: ${response.status}`);
     } else {
-      const data = await response.json();
+          const data = await response.json();
 
-      console.log(data);
-      setPlaylistData(data.playlistData);
-      setPlaylistBooks(data.booksInPlaylist);
-      setRecommendedBooks(data.recommendationBooks);
-      setAuthorData(data.authorData);
-      setPlaylistId(data.playlistData.playlist_id);
-      setImagePath(
-        `${IMAGE_BASE_URL}${data.playlistData.image_path.slice(17)}`
-      );
+          console.log(data)
+          setPlaylistData(data.playlistData)
+          setPlaylistBooks(data.booksInPlaylist)
+          setRecommendedBooks(data.recommendationBooks)
+          setAuthorData(data.authorData)
+          setPlaylistId(data.playlistData.playlist_id)
+          setImagePath(`${IMAGE_BASE_URL}${data.playlistData.image_path.slice(17)}`)
 
-      // Filter out books that are already in the playlistBooks from recommendedBooks
-      setRecommendedBooks((prevRecommendedBooks) =>
-        prevRecommendedBooks.filter(
-          (item) =>
-            !data.booksInPlaylist.some(
-              (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
-            )
-        )
-      );
+          // Filter out books that are already in the playlistBooks from recommendedBooks
+          setRecommendedBooks((prevRecommendedBooks) =>
+              prevRecommendedBooks.filter((item) =>
+                  !data.booksInPlaylist.some(
+                      (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
+                  )
+              )
+          );
+
+          
+
+          console.log(data.booksInPlaylist)
+      }
     }
-  };
+
 
   const addPlaylistBook = async (bookp_id) => {
     try {
@@ -177,33 +174,30 @@ const PlaylistDetails = () => {
         console.log("Book added to playlist successfully");
         // Filter out the book from recommendedBooks
 
-        setPlaylistBooks((prevPlaylistBooks) => {
-          const deletedBook = recommendedBooks.find(
-            (item) => item.bookp_id === bookp_id
-          );
+              setPlaylistBooks((prevPlaylistBooks) => {
+                const deletedBook = recommendedBooks.find(
+                  (item) => item.bookp_id === bookp_id
+                );
+            
+                if (deletedBook) {
+                    return [...prevPlaylistBooks, {
+                        bookp_id: deletedBook.bookp_id,
+                        playlist_id,
+                        bookp: deletedBook,
+                    }];
+                }
+            
+                return prevPlaylistBooks;
+              });
 
-          if (deletedBook) {
-            return [
-              ...prevPlaylistBooks,
-              {
-                bookp_id: deletedBook.bookp_id,
-                playlist_id,
-                bookp: deletedBook,
-              },
-            ];
+              setRecommendedBooks((prevRecommendedBooks) =>
+                prevRecommendedBooks.filter((item) => item.bookp_id !== bookp_id)
+              );
+            }
+          } catch (error) {
+            console.error('Error adding book to playlist:', error);
           }
-
-          return prevPlaylistBooks;
-        });
-
-        setRecommendedBooks((prevRecommendedBooks) =>
-          prevRecommendedBooks.filter((item) => item.bookp_id !== bookp_id)
-        );
-      }
-    } catch (error) {
-      console.error("Error adding book to playlist:", error);
     }
-  };
 
   const deletePlaylistBook = async (bookp_id) => {
     try {
@@ -223,71 +217,76 @@ const PlaylistDetails = () => {
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
-        console.error(`API request failed with status: ${response.status}`);
-      } else {
-        // Handle success, maybe show a success message or close a modal
-        console.log("Book deleted from playlist successfully");
-        // Filter out the book from recommendedBooks
+            if (!response.ok) {
+                console.error(`API request failed with status: ${response.status}`);
+            } else {
+                // Handle success, maybe show a success message or close a modal
+                console.log('Book deleted from playlist successfully');
+                // Filter out the book from recommendedBooks
 
-        setRecommendedBooks((prevRecommendedBooks) => {
-          const deletedBook = playlistBooks.find(
-            (item) => item.bookp.bookp_id === bookp_id
-          );
+                setRecommendedBooks((prevRecommendedBooks) => {
+                    const deletedBook = playlistBooks.find(
+                      (item) => item.bookp.bookp_id === bookp_id
+                    );
+                
+                    if (deletedBook) {
+                      return [...prevRecommendedBooks, deletedBook.bookp];
+                    }
+                
+                    return prevRecommendedBooks;
+                  });
 
-          if (deletedBook) {
-            return [...prevRecommendedBooks, deletedBook.bookp];
-          }
-
-          return prevRecommendedBooks;
-        });
-
-        setPlaylistBooks((prevPlaylistBooks) =>
-          prevPlaylistBooks.filter((item) => item.bookp.bookp_id !== bookp_id)
-        );
-      }
-    } catch (error) {
-      console.error("Error adding book to playlist:", error);
-    }
-  };
+                  setPlaylistBooks((prevPlaylistBooks) =>
+                    prevPlaylistBooks.filter((item) => item.bookp.bookp_id !== bookp_id)
+                );
+            }
+        } catch (error) {
+            console.error('Error adding book to playlist:', error);
+        }
+    };
 
   useEffect(() => {
     fetchPlaylistBook();
   }, []);
 
-  // Handle play audiobook
-  const [audioIsPlaying, setAudioIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+    // Handle play audiobook
+    const [audioIsPlaying, setAudioIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handlePlayButtonClick = (audioPath: string) => {
-    if (audioRef.current) {
-      if (audioIsPlaying) {
-        // Pause the audio
-        audioRef.current.pause();
-      } else {
-        // Set the audio source and play
-        audioRef.current.src = audioPath;
-        const playPromise = audioRef.current.play();
-
-        // Handle promise to avoid the error
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Playback started successfully
-            })
-            .catch((error) => {
-              console.error("Audio playback error:", error);
-            });
+    const handlePlayButtonClick = (audioPath: string) => {
+        if (audioRef.current) {
+          if (audioIsPlaying) {
+            // Pause the audio
+            audioRef.current.pause();
+          } else {
+            // Set the audio source and play
+            audioRef.current.src = audioPath;
+            const playPromise = audioRef.current.play();
+    
+            // Handle promise to avoid the error
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  // Playback started successfully
+                })
+                .catch((error) => {
+                  console.error('Audio playback error:', error);
+                });
+            }
+          }
+          setAudioIsPlaying(!audioIsPlaying);
         }
-      }
-      setAudioIsPlaying(!audioIsPlaying);
-    }
-  };
+      };
 
   return (
     <>
-      <TopBar />
-      <Flex flex="1" p="20px" flexDirection="column">
+      <Sidebar />
+      <Flex
+        flex="1"
+        p="20px"
+        flexDirection="column"
+        ml={{ base: "0", lg: "20%" }}
+      >
         <Flex flexDir="column">
           <IconButton
             icon={<ArrowBackIcon />}
@@ -302,7 +301,7 @@ const PlaylistDetails = () => {
           />
           <Flex flexDir="row" marginBottom="1rem">
             <Image
-              src="https://bit.ly/dan-abramov"
+              src={image_path}
               alt="Dan Abramov"
               borderRadius="30px"
               boxSize="150px"
@@ -321,165 +320,89 @@ const PlaylistDetails = () => {
             </Flex>
           </Flex>
 
-          <TableContainer overflowX="auto" mt="4">
-            <Table variant="striped" size="sm" colorScheme="gray">
-              <Thead>
-                <Tr>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    No.
-                  </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    Title
-                  </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    Word Count
-                  </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    Duration
-                  </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    Release Date
-                  </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
-                    Action
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {playlistBooks.map((item) => (
-                  <Tr key={item.bookp.title}>
-                    <Td textAlign="center" verticalAlign="middle">
-                      {rowCount++}
-                    </Td>
-                    <Td textAlign="center" verticalAlign="middle">
-                      {item.bookp.title}
-                    </Td>
-                    <Td textAlign="center" verticalAlign="middle">
-                      {item.bookp.word_count}
-                    </Td>
-                    <Td textAlign="center" verticalAlign="middle">
-                      {item.bookp.duration}
-                    </Td>
-                    <Td textAlign="center" verticalAlign="middle">
-                      {item.bookp.release_date
-                        ? new Date(item.bookp.release_date)
-                            .toISOString()
-                            .slice(0, 10)
-                        : "No date available"}
-                    </Td>
-                    <Td textAlign="center" verticalAlign="middle">
-                      <Flex
-                        direction={{ base: "column", md: "row" }}
-                        align={{ base: "center", md: "initial" }}
-                        justify="center"
-                      >
-                        <IconButton
-                          icon={<Icon as={FiPlay} />}
-                          variant="outline"
-                          colorScheme="teal"
-                          mr={2}
-                          onClick={() => {
-                            toggleAudio(
-                              `${AUDIO_BASE_URL}${item.bookp.audio_path.slice(
-                                17
-                              )}`
-                            );
-                          }}
-                        />
-                        <IconButton
-                          icon={<DeleteIcon />}
-                          variant="outline"
-                          colorScheme="red"
-                          mr={2}
-                          onClick={() => {
-                            openDeleteModal(item.bookp.bookp_id);
-                          }}
-                        />
-                      </Flex>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                    <TableContainer>
+                        <Table variant="striped" size="lg" w="145vh" colorScheme="gray" overflowX="auto">
+                            <Thead>
+                                <Tr>
+                                    <Th textAlign="center" verticalAlign="middle">No.</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Title</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Word Count</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Duration</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Release Date</Th>
+                                    <Th textAlign="center" verticalAlign="middle">Action</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {
+                                    playlistBooks.map((item) => (
+                                        <Tr key={item.bookp.title}>
+                                            <Td textAlign="center" verticalAlign="middle">{rowCount++}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.bookp.title}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.bookp.word_count}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">{item.bookp.duration}</Td>
+                                            <Td textAlign="center" verticalAlign="middle">
+                                                {(item.bookp.release_date ? new Date(item.bookp.release_date).toISOString().slice(0, 10) : "No date available")}
+                                            </Td>
+                                            <Td textAlign="center" verticalAlign="middle">
+                                                <IconButton
+                                                    icon={<Icon as={FiPlay} />}
+                                                    variant="outline"
+                                                    colorScheme="teal"
+                                                    mr={2}
+                                                    onClick={() => {
+                                                        // Handle play button
+                                                        handlePlayButtonClick(`${AUDIO_BASE_URL}${item.bookp.audio_path.slice(17)}`)
+                                                    }}
+                                                />
+                                                <IconButton
+                                                    icon={<DeleteIcon />}
+                                                    variant="outline"
+                                                    colorScheme="red"
+                                                    mr={2}
+                                                    onClick={() => {
+                                                        openDeleteModal(item.bookp.bookp_id);
+                                                    }}
+                                                />
+                                            </Td>
+                                        </Tr>
+                                    ))
+                                }
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Audio Element */}
+                    <audio ref={audioRef} />
 
           <Heading size="md" marginTop="5rem" marginBottom="1rem">
             Books you can add to the playlist
           </Heading>
 
-          <TableContainer overflowX="auto" mt="4">
-            <Table variant="striped" size="sm" colorScheme="gray">
+          <TableContainer>
+            <Table
+              variant="striped"
+              size="md"
+              colorScheme="gray"
+              overflowX="auto"
+            >
               <Thead>
                 <Tr>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     No.
                   </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    px={2}
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     Title
                   </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    px={2}
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     Word Count
                   </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    px={2}
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     Duration
                   </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    px={2}
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     Release Date
                   </Th>
-                  <Th
-                    textAlign="center"
-                    verticalAlign="middle"
-                    px={2}
-                    style={{ padding: "4px", minWidth: 0 }}
-                  >
+                  <Th textAlign="center" verticalAlign="middle">
                     Action
                   </Th>
                 </Tr>

@@ -25,7 +25,7 @@ import {
 
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { color } from "framer-motion";
-import TopBar from "../components/TopBar";
+import Sidebar from "../components/Sidebar";
 import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "../constants/constants";
 
@@ -37,14 +37,15 @@ interface IUser {
   username: string;
 }
 
+
 const Subscriber = () => {
   const [cookies, setCookie] = useCookies(["token"]);
 
-  const [subscriberData, setSubscriberData] = useState<IUser[]>([]);
-  const [author_id, setAuthorId] = useState(0);
-  const [user_id, setSubscriberId] = useState(0);
-  const [pendingSubscriber, setPendingSubscriber] = useState<IUser[]>([]);
-  const [status, setStatus] = useState<String>("");
+  const [subscriberData, setSubscriberData] = useState<IUser[]>([])
+  const [author_id, setAuthorId] = useState(0)
+  const [user_id, setSubscriberId] = useState(0)
+  const [pendingSubscriber, setPendingSubscriber] = useState<IUser[]>([])
+  const [status, setStatus] = useState<String>("")
 
   let rowCount = 1;
 
@@ -72,10 +73,10 @@ const Subscriber = () => {
     } else {
       const data = await response.json();
 
-      console.log(data);
-      setSubscriberData(data.data);
+      console.log(data)
+      setSubscriberData(data.data)
     }
-  };
+  }
 
   // Fetch author pending subscribers
   const fetchPendingSubscribers = async () => {
@@ -98,10 +99,11 @@ const Subscriber = () => {
     } else {
       const data = await response.json();
 
-      console.log(data);
-      setPendingSubscriber(data.data);
+      console.log(data)
+      setPendingSubscriber(data.data)
     }
-  };
+
+  }
 
   // Function to open delete modal
   const openDeleteModal = (item) => {
@@ -118,13 +120,13 @@ const Subscriber = () => {
   };
 
   // Delete subscribers
-  const deleteSubscriber = async () => {
+  const deleteSubscriber = async() => {
     const token = cookies.token;
 
     const body = {
       author_id,
       user_id,
-    };
+    }
 
     const response = await fetch(
       `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
@@ -139,26 +141,26 @@ const Subscriber = () => {
     );
 
     if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
+      console.error(`API request failed with status: ${response.status}`)
     } else {
-      console.log("Subscriber deleted successfully");
+      console.log('Subscriber deleted successfully');
 
       setSubscriberData((prevSubscribers) =>
         prevSubscribers.filter((item) => item.user_id !== user_id)
-      );
+      )
 
       closeDeleteModal();
     }
-  };
+  }
 
-  const rejectSubscriber = async () => {
+  const rejectSubscriber = async() => {
     const token = cookies.token;
 
     const body = {
       author_id,
       user_id,
       status,
-    };
+    }
 
     const response = await fetch(
       `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
@@ -173,24 +175,24 @@ const Subscriber = () => {
     );
 
     if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
+      console.error(`API request failed with status: ${response.status}`)
     } else {
-      console.log("Subscriber rejected successfully");
+      console.log('Subscriber rejected successfully');
 
       setPendingSubscriber((prevPendingSubscribers) =>
         prevPendingSubscribers.filter((item) => item.user_id !== user_id)
-      );
+      )
     }
-  };
+  }
 
-  const acceptSubscriber = async () => {
+  const acceptSubscriber = async() => {
     const token = cookies.token;
 
     const body = {
       author_id,
       user_id,
       status,
-    };
+    }
 
     const response = await fetch(
       `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
@@ -205,9 +207,9 @@ const Subscriber = () => {
     );
 
     if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
+      console.error(`API request failed with status: ${response.status}`)
     } else {
-      console.log("Subscriber rejected successfully");
+      console.log('Subscriber rejected successfully');
 
       setSubscriberData((prevSubscribers) => {
         const acceptedSubscriber = pendingSubscriber.find(
@@ -215,17 +217,17 @@ const Subscriber = () => {
         );
 
         if (acceptedSubscriber) {
-          return [...prevSubscribers, acceptedSubscriber];
+          return [...prevSubscribers, acceptedSubscriber]
         }
 
-        return prevSubscribers;
-      });
+        return prevSubscribers
+      })
 
       setPendingSubscriber((prevPendingSubscribers) =>
         prevPendingSubscribers.filter((item) => item.user_id !== user_id)
-      );
+      )
     }
-  };
+  }
 
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
 
@@ -243,8 +245,13 @@ const Subscriber = () => {
 
   return (
     <>
-      <TopBar />
-      <Flex flex="1" p="20px" flexDirection="column">
+      <Sidebar />
+      <Flex
+        flex="1"
+        p="20px"
+        flexDirection="column"
+        ml={{ md: "13%", base: "0" }}
+      >
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           justifyContent={{ md: "space-between" }}
@@ -388,7 +395,7 @@ const Subscriber = () => {
                       <Td textAlign="center" verticalAlign="middle">
                         <Button
                           onClick={() => {
-                            setStatus("ACCEPTED");
+                            setStatus("ACCEPTED")
                             setSubscriberId(item.user_id);
                             acceptSubscriber();
                             closeSubscribeModal();
@@ -402,7 +409,7 @@ const Subscriber = () => {
                         </Button>
                         <Button
                           onClick={() => {
-                            setStatus("DELETED");
+                            setStatus("DELETED")
                             setSubscriberId(item.user_id);
                             rejectSubscriber();
                             closeSubscribeModal();
