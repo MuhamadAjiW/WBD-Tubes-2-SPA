@@ -16,7 +16,7 @@ import {
 
 import SideItem from './SideItem'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { REST_BASE_URL } from '@constants/constants'
+import { REST_API_URL } from '@constants/constants'
 import { useCookies } from 'react-cookie'
 import { IAuthor } from '@utils/interfaces/IAuthor';
 
@@ -42,7 +42,7 @@ export default function Sidebar() {
         const token = cookies.token;
 
         // Ntar idnya bakal fetch ke /token/id dlu
-        const response = await fetch(`${REST_BASE_URL}/authors/1`, {
+        const response = await fetch(`${REST_API_URL}/authors/1`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

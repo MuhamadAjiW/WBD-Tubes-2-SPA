@@ -1,9 +1,9 @@
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 
 export const fetchSubscribers = async(author_id:number, token:string | undefined = undefined): Promise<ServerResponse> => {
     try{
         const response = await fetch(
-            `${REST_BASE_URL}/authors/${author_id}/subscribers`,
+            `${REST_API_URL}/authors/${author_id}/subscribers`,
             {
                 method: "GET",
                 headers: {
@@ -25,7 +25,7 @@ export const fetchSubscribers = async(author_id:number, token:string | undefined
 export const fetchPendingSubscribers = async(author_id:number, token:string | undefined = undefined): Promise<ServerResponse> => {
     try{
         const response = await fetch(
-            `${REST_BASE_URL}/authors/${author_id}/subscribers/requests`,
+            `${REST_API_URL}/authors/${author_id}/subscribers/requests`,
             {
                 method: "GET",
                 headers: {
@@ -48,7 +48,7 @@ export const deleteSubscriber = async(user_id:number, author_id:number, token:st
     try{
 
         const response = await fetch(
-            `${REST_BASE_URL}/authors/${author_id}/subscribers/requests${user_id}`,
+            `${REST_API_URL}/authors/${author_id}/subscribers/requests${user_id}`,
             {
                 method: "DELETE",
                 headers: {
@@ -75,7 +75,7 @@ export const updateSubscriber = async(user_id:number, author_id:number, status:s
             status
         };
         const response = await fetch(
-            `${REST_BASE_URL}/authors/${author_id}/subscribers/requests${user_id}`,
+            `${REST_API_URL}/authors/${author_id}/subscribers/requests${user_id}`,
             {
                 method: "PATCH",
                 headers: {

@@ -1,4 +1,4 @@
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 
 export const validateEmailAndPassword = (email: string, password: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +19,7 @@ export const validateEmailAndPassword = (email: string, password: string) => {
 
 export const loginRequest = async (email: string, password: string): Promise<ServerResponse>  => {
     try {        
-        const response = await fetch(`${REST_BASE_URL}/token`, {
+        const response = await fetch(`${REST_API_URL}/token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

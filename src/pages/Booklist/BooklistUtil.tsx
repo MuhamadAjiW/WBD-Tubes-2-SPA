@@ -1,9 +1,9 @@
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 
 export const fetchBookP = async(author_id:number, token:string | undefined = undefined): Promise<ServerResponse> => {
     try {
         const response = await fetch(
-            `${REST_BASE_URL}/authors/${author_id}/books`,
+            `${REST_API_URL}/authors/${author_id}/books`,
             {
                 method: "GET",
                 headers: {

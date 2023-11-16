@@ -24,7 +24,7 @@ import {
 import { DeleteIcon } from "@chakra-ui/icons";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 import { fetchPendingSubscribers, fetchSubscribers } from './SubscriberUtil';
 import { getAccountID } from "@utils/AuthUtil";
 import { IUser } from "@utils/interfaces/IUser";
@@ -99,7 +99,7 @@ const Subscriber = () => {
     };
 
     const response = await fetch(
-      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      `${REST_API_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
       {
         method: "DELETE",
         headers: {
@@ -133,7 +133,7 @@ const Subscriber = () => {
     };
 
     const response = await fetch(
-      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      `${REST_API_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
       {
         method: "PATCH",
         headers: {
@@ -166,7 +166,7 @@ const Subscriber = () => {
     console.log(body);
 
     const response = await fetch(
-      `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
+      `${REST_API_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
       {
         method: "PATCH",
         headers: {

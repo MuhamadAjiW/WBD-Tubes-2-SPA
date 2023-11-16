@@ -16,7 +16,7 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ export default function Register() {
 
   const handleRegister = async () => {
     if (validateEmailAndPassword()) {
-        const response = await fetch(`${REST_BASE_URL}/authors`, {
+        const response = await fetch(`${REST_API_URL}/authors`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',

@@ -30,8 +30,7 @@ import { FiPlay } from "react-icons/fi";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
 import {
-  AUDIO_BASE_URL,
-  IMAGE_BASE_URL,
+  REST_API_URL,
   REST_BASE_URL,
 } from "@constants/constants";
 import { IPlaylistBook } from "@utils/interfaces/IPlaylistBook";
@@ -80,7 +79,7 @@ const PlaylistDetails = () => {
     const token = cookies.token;
 
     const response = await fetch(
-      `${REST_BASE_URL}/playlists/` + String(playlist.playlist_id) + "/books",
+      `${REST_API_URL}/playlists/` + String(playlist.playlist_id) + "/books",
       {
         method: "GET",
         headers: {
@@ -104,7 +103,7 @@ const PlaylistDetails = () => {
         setAuthorData(serverResponse.data.authorData);
         setPlaylistId(serverResponse.data.playlistData.playlist_id);
         setImagePath(
-          `${IMAGE_BASE_URL}${serverResponse.data.playlistData.image_path.slice(17)}`
+          `${REST_BASE_URL}/${serverResponse.data.playlistData.image_path}`
         );
   
         // Filter out books that are already in the playlistBooks from recommendedBooks
@@ -112,7 +111,7 @@ const PlaylistDetails = () => {
           prevRecommendedBooks.filter(
             (item) =>
               !serverResponse.data.booksInPlaylist.some(
-                (playlistBook) => playlistBook.bookp.bookp_id === item.bookp_id
+                (playlistBook: IPlaylistBook) => playlistBook.bookp.bookp_id === item.bookp_id
               )
           )
         );
@@ -133,7 +132,7 @@ const PlaylistDetails = () => {
         playlist_id,
       };
 
-      const response = await fetch(`${REST_BASE_URL}/playlists/${id}/books`, {
+      const response = await fetch(`${REST_API_URL}/playlists/${id}/books`, {
         method: "POST",
         headers: {
           Authorization: token ?? "Bearer " + token,
@@ -186,7 +185,7 @@ const PlaylistDetails = () => {
         playlist_id,
       };
 
-      const response = await fetch(`${REST_BASE_URL}/playlists/${id}/books`, {
+      const response = await fetch(`${REST_API_URL}/playlists/${id}/books`, {
         method: "DELETE",
         headers: {
           Authorization: token ?? "Bearer " + token,
@@ -270,12 +269,12 @@ const PlaylistDetails = () => {
             w="10px"
             onClick={() => {
               navigate("/playlists");
-            }}
-          />
+            } } aria-label={"Back button"}
+            />
           <Flex flexDir="row" marginBottom="1rem">
             <Image
               src={image_path}
-              alt="Dan Abramov"
+              alt="Playlist Image"
               borderRadius="30px"
               boxSize="150px"
               marginRight="1rem"
@@ -377,11 +376,9 @@ const PlaylistDetails = () => {
                           onClick={() => {
                             // Handle play button
                             handlePlayButtonClick(
-                              `${AUDIO_BASE_URL}${item.bookp.audio_path.slice(
-                                17
-                              )}`
+                              `${REST_BASE_URL}/${item.bookp.audio_path}`
                             );
-                          }}
+                          } } aria-label={"Play audio button"}
                         />
                         <IconButton
                           icon={<DeleteIcon />}
@@ -390,7 +387,7 @@ const PlaylistDetails = () => {
                           mr={2}
                           onClick={() => {
                             openDeleteModal(item.bookp.bookp_id);
-                          }}
+                          } } aria-label={"Remove from playlist button"}
                         />
                       </Flex>
                     </Td>
@@ -483,7 +480,7 @@ const PlaylistDetails = () => {
                         mr={2}
                         onClick={() => {
                           addPlaylistBook(item.bookp_id);
-                        }}
+                        } } aria-label={"Add to playlist Button"}
                       />
                     </Td>
                   </Tr>

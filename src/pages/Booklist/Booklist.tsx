@@ -29,7 +29,7 @@ import {
 import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 import { IBookP } from "@utils/interfaces/IBookP";
 import { getAccountID } from "@utils/AuthUtil";
@@ -143,7 +143,7 @@ const BookList = () => {
       const token = cookies.token;
 
       // Send a DELETE request to the server
-      const response = await fetch(`${REST_BASE_URL}/books/${bookp_id}`, {
+      const response = await fetch(`${REST_API_URL}/books/${bookp_id}`, {
         method: "DELETE",
         headers: {
           Authorization: token ?? "Bearer " + token,
@@ -220,7 +220,7 @@ const BookList = () => {
 
     try {
       const token = cookies.token;
-      const response = await fetch(`${REST_BASE_URL}/books`, {
+      const response = await fetch(`${REST_API_URL}/books`, {
         method: "POST",
         headers: {
           Authorization: token ?? "Bearer " + token,
@@ -275,7 +275,7 @@ const BookList = () => {
     try {
       const token = cookies.token;
       const response = await fetch(
-        `${REST_BASE_URL}/books/` + String(bookp_id),
+        `${REST_API_URL}/books/` + String(bookp_id),
         {
           method: "PATCH",
           headers: {

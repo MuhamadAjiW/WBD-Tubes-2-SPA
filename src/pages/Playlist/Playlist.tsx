@@ -29,7 +29,7 @@ import { EditIcon, DeleteIcon, AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import TopBar from "@components/TopBar";
 import { useCookies } from "react-cookie";
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 import { IPlaylist } from "@utils/interfaces/IPlaylist";
 import { getAccountID } from "@utils/AuthUtil";
@@ -141,7 +141,7 @@ const Playlist = () => {
 
     try {
       const token = cookies.token;
-      const response = await fetch(`${REST_BASE_URL}/playlists`, {
+      const response = await fetch(`${REST_API_URL}/playlists`, {
         method: "POST",
         headers: {
           Authorization: token ?? "Bearer " + token,
@@ -172,7 +172,7 @@ const Playlist = () => {
 
       // Send a DELETE request to the server
       const response = await fetch(
-        `${REST_BASE_URL}/playlists/${playlist_id}`,
+        `${REST_API_URL}/playlists/${playlist_id}`,
         {
           method: "DELETE",
           headers: {
@@ -213,7 +213,7 @@ const Playlist = () => {
     try {
       const token = cookies.token;
       const response = await fetch(
-        `${REST_BASE_URL}/playlists/` + String(playlist_id),
+        `${REST_API_URL}/playlists/` + String(playlist_id),
         {
           method: "PATCH",
           headers: {

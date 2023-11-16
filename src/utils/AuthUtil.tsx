@@ -1,4 +1,4 @@
-import { REST_BASE_URL } from "@constants/constants";
+import { REST_API_URL } from "@constants/constants";
 import React from "react";
 import { useCookies } from "react-cookie"
 import { Navigate } from "react-router-dom";
@@ -24,7 +24,7 @@ export const RequireNoAuth: React.FC<PrivateRouteProps> = ({ element }) => {
 export const getAccountID = async(token:number | undefined = undefined): Promise<ServerResponse> => {
     try{
         const response = await fetch(
-            `${REST_BASE_URL}/token/id`,
+            `${REST_API_URL}/token/id`,
             {
                 method: "GET",
                 headers: {
