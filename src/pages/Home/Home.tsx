@@ -1,9 +1,8 @@
 import { Box, Heading, Container, Text, Stack, Image } from "@chakra-ui/react";
-import logoImage from "@assets/logo.svg"; // Assuming this is the correct path to your image
+import logoImage from "@assets/logo.svg";
 import TopBar from "@components/TopBar";
 
 const Home = () => {
-  // TODO: Delete later (Testing purposes)
   return (
     <>
       <Box>

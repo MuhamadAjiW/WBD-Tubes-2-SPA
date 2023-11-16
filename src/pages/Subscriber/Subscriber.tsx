@@ -28,14 +28,14 @@ import { REST_BASE_URL } from "@constants/constants";
 import { fetchPendingSubscribers, fetchSubscribers } from './SubscriberUtil';
 import { getAccountID } from "@utils/AuthUtil";
 import { IUser } from "@utils/interfaces/IUser";
+import { ISubscribeData } from "@utils/interfaces/ISubscribeData";
 
 const Subscriber = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-  const [subscriberData, setSubscriberData] = useState<IUser[]>([]);
+  const [subscriberData, setSubscriberData] = useState<ISubscribeData[]>([]);
   const [author_id, setAuthorId] = useState(0);
   const [user_id, setSubscriberId] = useState(0);
-  const [pendingSubscriber, setPendingSubscriber] = useState<IUser[]>([]);
-  const [status, setStatus] = useState<String>("");
+  const [pendingSubscriber, setPendingSubscriber] = useState<ISubscribeData[]>([]);
 
   let rowCount = 1;
 
@@ -52,12 +52,10 @@ const Subscriber = () => {
   // Function to close pending request modal
   const closeSubscribeModal = () => {
     setIsSubscribeModalOpen(false);
-    setStatus("");
-    setSubscriberId(0);
   };
 
   // Function to open delete modal
-  const openDeleteModal = (item) => {
+  const openDeleteModal = (item: IUser) => {
     setIsDeleteModalOpen(true);
     setSubscriberUsername(item.username);
     setSubscriberId(item.user_id);
@@ -66,8 +64,6 @@ const Subscriber = () => {
   // Function to close delete modal
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setSubscriberUsername("");
-    setSubscriberId(0);
   };
 
   useEffect(() => {
@@ -77,6 +73,7 @@ const Subscriber = () => {
         window.location.href = "/login";
         return;
       }
+      setAuthorId(result.data);
 
       fetchSubscribers(result.data, cookies.token).then((activeSubscribers) => {
         console.log(activeSubscribers);
@@ -119,20 +116,20 @@ const Subscriber = () => {
       console.log("Subscriber deleted successfully");
 
       setSubscriberData((prevSubscribers) =>
-        prevSubscribers.filter((item) => item.user_id !== user_id)
+        prevSubscribers.filter((item) => item.user_details.user_id !== user_id)
       );
 
       closeDeleteModal();
     }
   };
 
-  const rejectSubscriber = async () => {
+  const rejectSubscriber = async (user_id: number) => {
     const token = cookies.token;
 
     const body = {
-      author_id,
-      user_id,
-      status,
+      author_id: author_id,
+      user_id: user_id,
+      status: "REJECT",
     };
 
     const response = await fetch(
@@ -153,19 +150,20 @@ const Subscriber = () => {
       console.log("Subscriber rejected successfully");
 
       setPendingSubscriber((prevPendingSubscribers) =>
-        prevPendingSubscribers.filter((item) => item.user_id !== user_id)
+        prevPendingSubscribers.filter((item) => item.user_details.user_id !== user_id)
       );
     }
   };
 
-  const acceptSubscriber = async () => {
+  const acceptSubscriber = async (user_id: number) => {
     const token = cookies.token;
 
     const body = {
-      author_id,
-      user_id,
-      status,
+      author_id: author_id,
+      user_id: user_id,
+      status: "ACCEPT",
     };
+    console.log(body);
 
     const response = await fetch(
       `${REST_BASE_URL}/authors/${author_id}/subscribers/requests/${user_id}`,
@@ -182,11 +180,11 @@ const Subscriber = () => {
     if (!response.ok) {
       console.error(`API request failed with status: ${response.status}`);
     } else {
-      console.log("Subscriber rejected successfully");
+      console.log("Subscriber accepted successfully");
 
       setSubscriberData((prevSubscribers) => {
         const acceptedSubscriber = pendingSubscriber.find(
-          (item) => item.user_id === user_id
+          (item) => item.user_details.user_id === user_id
         );
 
         if (acceptedSubscriber) {
@@ -197,7 +195,7 @@ const Subscriber = () => {
       });
 
       setPendingSubscriber((prevPendingSubscribers) =>
-        prevPendingSubscribers.filter((item) => item.user_id !== user_id)
+        prevPendingSubscribers.filter((item) => item.user_details.user_id !== user_id)
       );
     }
   };
@@ -253,10 +251,10 @@ const Subscriber = () => {
                     {rowCount++}
                   </Td>
                   <Td textAlign="center" verticalAlign="middle">
-                    {item.username}
+                    {item.user_details.username}
                   </Td>
                   <Td textAlign="center" verticalAlign="middle">
-                    {item.email}
+                    {item.user_details.email}
                   </Td>
                   <Td textAlign="center" verticalAlign="middle">
                     <IconButton
@@ -265,8 +263,8 @@ const Subscriber = () => {
                       colorScheme="red"
                       mr={2}
                       onClick={() => {
-                        openDeleteModal(item);
-                      }}
+                        openDeleteModal(item.user_details);
+                      } } aria-label={"Button for rejecting subscriber"}
                     />
                   </Td>
                 </Tr>
@@ -344,14 +342,12 @@ const Subscriber = () => {
                   {pendingSubscriber.map((item) => (
                     <Tr key={item.user_id}>
                       <Td textAlign="center" verticalAlign="middle">
-                        {item.username}
+                        {item.user_details.username}
                       </Td>
                       <Td textAlign="center" verticalAlign="middle">
                         <Button
                           onClick={() => {
-                            setStatus("ACCEPTED");
-                            setSubscriberId(item.user_id);
-                            acceptSubscriber();
+                            acceptSubscriber(item.user_details.user_id);
                             closeSubscribeModal();
                           }}
                           style={{ color: "white" }}
@@ -363,9 +359,7 @@ const Subscriber = () => {
                         </Button>
                         <Button
                           onClick={() => {
-                            setStatus("DELETED");
-                            setSubscriberId(item.user_id);
-                            rejectSubscriber();
+                            rejectSubscriber(item.user_details.user_id);
                             closeSubscribeModal();
                           }}
                           style={{ color: "white" }}
@@ -373,7 +367,7 @@ const Subscriber = () => {
                           w="30%"
                           marginLeft="10px"
                         >
-                          Delete
+                          Reject
                         </Button>
                       </Td>
                     </Tr>
