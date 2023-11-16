@@ -3,7 +3,7 @@ import { REST_BASE_URL } from "@constants/constants";
 export const fetchPlaylist = async(author_id:number, token:string | undefined = undefined): Promise<ServerResponse> => {
     try {
         const response = await fetch(
-            `${REST_BASE_URL}/playlists/authors/${author_id}`,
+            `${REST_BASE_URL}/authors/${author_id}/playlists`,
             {
                 method: "GET",
                 headers: {

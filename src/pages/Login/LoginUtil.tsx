@@ -10,7 +10,8 @@ export const validateEmailAndPassword = (email: string, password: string) => {
         retval.valid = false;
     }
     if (!passwordRegex.test(password)) {
-        retval.passwordError = "Password must contain at least 8 characters";
+        retval.passwordError = "Invalid Credentials";
+        retval.emailError = "Invalid Credentials";
         retval.valid = false;
     }
     return retval;
@@ -31,8 +32,8 @@ export const loginRequest = async (email: string, password: string): Promise<Ser
         });
         
         if (!response.ok) {
-            const error = await response.json();            
-            throw error;
+            const error: ServerResponse = await response.json();
+            return error;
             // TODO: Add interactive errors
         }
     
@@ -50,6 +51,11 @@ export const loginRequest = async (email: string, password: string): Promise<Ser
             return new ServerResponse();
         }
     } catch (error) {
-        return new ServerResponse();
+        console.log(error)
+        if( error instanceof ServerResponse){
+            return error;
+        } else{
+            return new ServerResponse();
+        }
     }
 }

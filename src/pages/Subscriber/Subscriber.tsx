@@ -78,13 +78,13 @@ const Subscriber = () => {
         return;
       }
 
-      fetchSubscribers(result.data).then((activeSubscribers) => {
+      fetchSubscribers(result.data, cookies.token).then((activeSubscribers) => {
         console.log(activeSubscribers);
         if(activeSubscribers.valid){
           setSubscriberData(activeSubscribers.data);
         }
       });
-      fetchPendingSubscribers(result.data).then((pendingSubscribers) => {
+      fetchPendingSubscribers(result.data, cookies.token).then((pendingSubscribers) => {
         if(pendingSubscribers.valid){
           setPendingSubscriber(pendingSubscribers.data);
         }

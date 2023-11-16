@@ -28,10 +28,16 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [cookies, setCookie] = useCookies(['token']);
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setEmailError("");
+    setPasswordError("");
+  }
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setEmailError("");
+    setPasswordError("");
+  }
 
   const handleLogin = async () => {
     const check = validateEmailAndPassword(email, password);
@@ -39,7 +45,8 @@ export default function Login() {
       const loginResponse: ServerResponse = await loginRequest(email, password)
       if(!loginResponse.valid){
         console.error("Login fetch failed");
-        // TODO: Add interactive errors
+        setEmailError(loginResponse.message);
+        setPasswordError(loginResponse.message);
         return;
       }
       console.log("Login fetch successful")

@@ -113,6 +113,7 @@ const Playlist = () => {
         window.location.href = "/login";
         return;
       }
+      setAuthorId(result.data);
 
       fetchPlaylist(result.data).then((authorsPlaylist) => {
         console.log(authorsPlaylist);

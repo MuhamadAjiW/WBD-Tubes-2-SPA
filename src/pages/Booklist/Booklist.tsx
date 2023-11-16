@@ -125,6 +125,7 @@ const BookList = () => {
         window.location.href = "/login";
         return;
       }
+      setAuthorId(result.data);
 
       fetchBookP(result.data).then((authorBooks) => {
         console.log(authorBooks);
