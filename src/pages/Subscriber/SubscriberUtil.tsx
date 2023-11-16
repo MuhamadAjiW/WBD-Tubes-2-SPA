@@ -13,10 +13,6 @@ export const fetchSubscribers = async(author_id:number, token:string | undefined
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
         const result: ServerResponse = await response.json();
         return result;
         
@@ -39,10 +35,6 @@ export const fetchPendingSubscribers = async(author_id:number, token:string | un
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
         const result: ServerResponse = await response.json();
         return result;
         
@@ -66,10 +58,6 @@ export const deleteSubscriber = async(user_id:number, author_id:number, token:st
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
         const result: ServerResponse = await response.json();
         return result;
         
@@ -99,10 +87,6 @@ export const updateSubscriber = async(user_id:number, author_id:number, status:s
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
         const result: ServerResponse = await response.json();
         return result;
         

@@ -13,11 +13,6 @@ export const fetchPlaylist = async(author_id:number, token:string | undefined = 
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
-
         const result: ServerResponse = await response.json();
         return result;
     } catch (error) {

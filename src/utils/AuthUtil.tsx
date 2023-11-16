@@ -34,13 +34,8 @@ export const getAccountID = async(token:number | undefined = undefined): Promise
             }
         )
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw error;
-        }
         const result: ServerResponse = await response.json();
         return result;
-        
     } catch (error){
         console.error("Subscriber request error:", error);
         throw error;
