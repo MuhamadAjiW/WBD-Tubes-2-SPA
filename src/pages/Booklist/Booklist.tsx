@@ -32,41 +32,34 @@ import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 import { IBookP } from "@utils/interfaces/IBookP";
+import { getAccountID } from "@utils/AuthUtil";
+import { fetchBookP } from "./BooklistUtil";
 
 const BookList = () => {
 
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const [bookPData, setBookPData] = useState<IBookP[]>([]);
-
-  // Fetch Author Books
-  const fetchBookP = async () => {
-    const token = cookies.token;
-
-    const response = await fetch(`${REST_BASE_URL}/books/author/1`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: token ?? "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-      setBookPData(data.data);
-    }
-  };
-
-  useEffect(() => {
-    fetchBookP();
-  }, []);
 
   let rowCount = 1;
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bookModalData, setBookModalData] = useState<IBookP | null>(null);
+  const [image, setImage] = useState("");
+  const [modalMode, setModalMode] = useState("add");
+  const [isModalOpen, setisModalOpen] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [genre, setGenre] = useState("");
+  const [duration, setDuration] = useState(0);
+  const [synopsis, setSynopsis] = useState("");
+  const [word_count, setWordCount] = useState(0);
+  const [release_date, setReleaseDate] = useState(new Date());
+  const [graphic_cntn, setGraphicCntn] = useState(false);
+  const [author_id, setAuthorId] = useState(0);
+  const [bookp_id, setBookPId] = useState(0);
+
+  const image_path = "";
+  const audio_path = "";
 
   // Function to open delete modal
   const openDeleteModal = (data) => {
@@ -79,73 +72,6 @@ const BookList = () => {
     setIsDeleteModalOpen(false);
   };
 
-  // Delete Book
-  const deleteBook = async (bookp_id: number | null) => {
-    try {
-      const token = cookies.token;
-
-      // Send a DELETE request to the server
-      const response = await fetch(`${REST_BASE_URL}/books/${bookp_id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: token ?? "Bearer " + token,
-        },
-      });
-
-      if (!response.ok) {
-        console.error(`API request failed with status: ${response.status}`);
-      } else {
-        // Book deleted successfully, update the bookPData state
-        setBookPData((prevData) =>
-          prevData.filter((item) => item.bookp_id !== bookp_id)
-        );
-        toast.success("Book deleted successfully!");
-      }
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
-
-  const [image, setImage] = useState("");
-  const handleImage = async (file) => {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      if (event.target && event.target.result) {
-        var res = event.target.result.split(",")[1];
-        setImage(res);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const [audio, setAudio] = useState("");
-  const handleAudio = async (file) => {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      if (event.target && event.target.result) {
-        var res = event.target.result.split(",")[1];
-        setAudio(res);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const [isModalOpen, setisModalOpen] = useState(false);
-
-  const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState("");
-  const [duration, setDuration] = useState(0);
-  const [synopsis, setSynopsis] = useState("");
-  const [word_count, setWordCount] = useState(0);
-  const [release_date, setReleaseDate] = useState(new Date());
-  const [graphic_cntn, setGraphicCntn] = useState(false);
-  const [author_id, setAuthorId] = useState(1);
-  const [bookp_id, setBookPId] = useState(0);
-
-  const image_path = "";
-  const audio_path = "";
-
-  const [modalMode, setModalMode] = useState("add");
 
   // Function to open addmodal
   const openAddModal = () => {
@@ -190,6 +116,74 @@ const BookList = () => {
     setImage("");
     setAudio("");
     setBookPId(0);
+  };
+
+  useEffect(() => {
+    getAccountID(cookies.token).then((result) => {
+      if (!result.valid) {
+        removeCookie('token', {path:'/'});
+        window.location.href = "/login";
+        return;
+      }
+
+      fetchBookP(result.data).then((authorBooks) => {
+        console.log(authorBooks);
+        if (authorBooks.valid) {
+          setBookPData(authorBooks.data)
+        }
+      })
+    })
+  }, []);
+
+
+  // Delete Book
+  const deleteBook = async (bookp_id: number | null) => {
+    try {
+      const token = cookies.token;
+
+      // Send a DELETE request to the server
+      const response = await fetch(`${REST_BASE_URL}/books/${bookp_id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token ?? "Bearer " + token,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`API request failed with status: ${response.status}`);
+      } else {
+        // Book deleted successfully, update the bookPData state
+        setBookPData((prevData) =>
+          prevData.filter((item) => item.bookp_id !== bookp_id)
+        );
+        toast.success("Book deleted successfully!");
+      }
+    } catch (error) {
+      console.error("Error deleting book:", error);
+    }
+  };
+
+  const handleImage = async (file) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      if (event.target && event.target.result) {
+        var res = event.target.result.split(",")[1];
+        setImage(res);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const [audio, setAudio] = useState("");
+  const handleAudio = async (file) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      if (event.target && event.target.result) {
+        var res = event.target.result.split(",")[1];
+        setAudio(res);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   // Add book to rest

@@ -53,6 +53,10 @@ const PlaylistDetails = () => {
     "https://bit.ly/dan-abramov"
   );
 
+  const { id } = useParams();
+  const location = useLocation();
+  const { playlist } = location.state || {};
+
   let rowCount = 1;
 
   let recommendedCount = 1;
@@ -71,9 +75,6 @@ const PlaylistDetails = () => {
     setBookToDelete(0);
   };
 
-  const { id } = useParams();
-  const location = useLocation();
-  const { playlist } = location.state || {};
 
   const fetchPlaylistBook = async () => {
     const token = cookies.token;

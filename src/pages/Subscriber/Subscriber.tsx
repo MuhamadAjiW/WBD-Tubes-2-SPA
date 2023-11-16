@@ -42,6 +42,34 @@ const Subscriber = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [subscriberUsername, setSubscriberUsername] = useState("");
 
+  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
+
+  // Function to open pending request modal
+  const openSubscribeModal = () => {
+    setIsSubscribeModalOpen(true);
+  };
+
+  // Function to close pending request modal
+  const closeSubscribeModal = () => {
+    setIsSubscribeModalOpen(false);
+    setStatus("");
+    setSubscriberId(0);
+  };
+
+  // Function to open delete modal
+  const openDeleteModal = (item) => {
+    setIsDeleteModalOpen(true);
+    setSubscriberUsername(item.username);
+    setSubscriberId(item.user_id);
+  };
+
+  // Function to close delete modal
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSubscriberUsername("");
+    setSubscriberId(0);
+  };
+
   useEffect(() => {
     getAccountID(cookies.token).then((result) => {
       if(!result.valid){
@@ -63,20 +91,6 @@ const Subscriber = () => {
       });
     })
   }, [])
-
-  // Function to open delete modal
-  const openDeleteModal = (item) => {
-    setIsDeleteModalOpen(true);
-    setSubscriberUsername(item.username);
-    setSubscriberId(item.user_id);
-  };
-
-  // Function to close delete modal
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setSubscriberUsername("");
-    setSubscriberId(0);
-  };
 
   // Delete subscribers
   const deleteSubscriber = async () => {
@@ -186,20 +200,6 @@ const Subscriber = () => {
         prevPendingSubscribers.filter((item) => item.user_id !== user_id)
       );
     }
-  };
-
-  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
-
-  // Function to open pending request modal
-  const openSubscribeModal = () => {
-    setIsSubscribeModalOpen(true);
-  };
-
-  // Function to close pending request modal
-  const closeSubscribeModal = () => {
-    setIsSubscribeModalOpen(false);
-    setStatus("");
-    setSubscriberId(0);
   };
 
   return (

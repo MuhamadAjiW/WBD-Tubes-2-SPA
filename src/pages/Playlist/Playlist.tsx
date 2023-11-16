@@ -32,36 +32,24 @@ import { useCookies } from "react-cookie";
 import { REST_BASE_URL } from "@constants/constants";
 import { toast } from "react-toastify";
 import { IPlaylist } from "@utils/interfaces/IPlaylist";
+import { getAccountID } from "@utils/AuthUtil";
+import { fetchPlaylist } from "./PlaylistUtil";
 
 const Playlist = () => {
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [playlistData, setPlaylistData] = useState<IPlaylist[]>([]);
+  
+  const [isModalOpen, setisModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("add");
 
-  const fetchPlaylist = async () => {
-    const token = cookies.token;
-
-    const response = await fetch(`${REST_BASE_URL}/playlists/author/1`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: token ?? "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.error(`API request failed with status: ${response.status}`);
-    } else {
-      const data = await response.json();
-      setPlaylistData(data.data);
-    }
-  };
-
-  useEffect(() => {
-    fetchPlaylist();
-  }, []);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const image_path = "";
+  const [author_id, setAuthorId] = useState(0);
+  const [playlist_id, setPlaylistId] = useState(0);
+  const [image, setImage] = useState("");
 
   // Function to open delete modal
   const openDeleteModal = (item) => {
@@ -77,15 +65,35 @@ const Playlist = () => {
     setPlaylistId(0);
   };
 
-  const [isModalOpen, setisModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add");
+  // Function to open addmodal
+  const openAddModal = () => {
+    setisModalOpen(true);
+    setModalMode("add");
+    setTitle("");
+    setDescription("");
+  };
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const image_path = "";
-  const [author_id, setAuthorId] = useState(1);
-  const [playlist_id, setPlaylistId] = useState(0);
-  const [image, setImage] = useState("");
+  // Function to open edit modal
+  const openEditModal = (item) => {
+    setisModalOpen(true);
+    setModalMode("edit");
+    setTitle(item.title);
+    setDescription(item.description);
+    setAuthorId(item.author_id);
+    setPlaylistId(item.playlist_id);
+  };
+
+  // Function to close add/edit modal
+  const closeModal = () => {
+    setisModalOpen(false);
+    setModalMode("add");
+    setTitle("");
+    setDescription("");
+  };
+
+  let rowCount = 1;
+
+  const navigate = useNavigate();
 
   const handleImage = async (file) => {
     const reader = new FileReader();
@@ -97,6 +105,23 @@ const Playlist = () => {
     };
     reader.readAsDataURL(file);
   };
+
+  useEffect(() => {
+    getAccountID(cookies.token).then((result) => {
+      if (!result.valid) {
+        removeCookie('token', {path:'/'});
+        window.location.href = "/login";
+        return;
+      }
+
+      fetchPlaylist(result.data).then((authorsPlaylist) => {
+        console.log(authorsPlaylist);
+        if (authorsPlaylist.valid) {
+          setPlaylistData(authorsPlaylist.data);
+        }
+      })
+    })
+  }, []);
 
   // Add playlist to rest
   const addPlaylist = async () => {
@@ -219,36 +244,6 @@ const Playlist = () => {
       console.error("Error editing playlist:", error);
     }
   };
-
-  // Function to open addmodal
-  const openAddModal = () => {
-    setisModalOpen(true);
-    setModalMode("add");
-    setTitle("");
-    setDescription("");
-  };
-
-  // Function to open edit modal
-  const openEditModal = (item) => {
-    setisModalOpen(true);
-    setModalMode("edit");
-    setTitle(item.title);
-    setDescription(item.description);
-    setAuthorId(item.author_id);
-    setPlaylistId(item.playlist_id);
-  };
-
-  // Function to close add/edit modal
-  const closeModal = () => {
-    setisModalOpen(false);
-    setModalMode("add");
-    setTitle("");
-    setDescription("");
-  };
-
-  let rowCount = 1;
-
-  const navigate = useNavigate();
 
   return (
     <>
