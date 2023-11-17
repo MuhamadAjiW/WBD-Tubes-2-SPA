@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { ChakraProvider } from "@chakra-ui/react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { RequireAuth, RequireNoAuth } from "@utils/AuthUtil";
+import Login from "@pages/Login/Login";
+import Register from "@pages/Register/Register";
+import BookList from "@pages/Booklist/Booklist";
+import Playlist from "@pages/Playlist/Playlist";
+import Subscriber from "@pages/Subscriber/Subscriber";
+import PlaylistDetails from "@pages/PlaylistDetail/PlaylistDetail";
+import NotFound from "@pages/Error/NotFound";
+import Home from "@pages/Home/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ChakraProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route path="/" element={<RequireNoAuth element={<Login />} />} />
+          <Route
+            path="/login"
+            element={<RequireNoAuth element={<Login />} />}
+          />
+          <Route
+            path="/register"
+            element={<RequireNoAuth element={<Register />} />}
+          />
+          {/* Protected */}
+          <Route path="/home" element={<RequireAuth element={<Home />} />} />
+          <Route
+            path="/books"
+            element={<RequireAuth element={<BookList />} />}
+          />
+          <Route
+            path="/playlists"
+            element={<RequireAuth element={<Playlist />} />}
+          />
+          <Route
+            path="/subscribers"
+            element={<RequireAuth element={<Subscriber />} />}
+          />
+          <Route
+            path="/playlistdetails/:id"
+            element={<RequireAuth element={<PlaylistDetails />} />}
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ChakraProvider>
+  );
 }
 
-export default App
+export default App;
