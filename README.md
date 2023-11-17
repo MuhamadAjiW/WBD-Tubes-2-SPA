@@ -26,16 +26,24 @@
 # Screenshot Aplikasi
 
 ### Page login
+![Page Login](./doc/screenshots/login.png)
 
 ### Page Register
+![Page Register](./doc/screenshots/register.png)
 
 ### Page Home
+![Page Home](./doc/screenshots/home.png)
 
-### Page Detail Buku
+### Page Buku
+![Page Buku](./doc/screenshots/books.png)
 
 ### Page Playlist
+![Page Playlist](./doc/screenshots/playlist.png)
+![Page Detail Playlist](./doc/screenshots/playlistDetail.png)
 
 ### Page Subscribers
+![Page Subscribers](./doc/screenshots/subscribers.png)
+![Page Pending Subscribers](./doc/screenshots/subscribersPending.png)
 
 # Pembagian Tugas
 
