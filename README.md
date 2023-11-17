@@ -1,27 +1,50 @@
-# React + TypeScript + Vite
+# Baca.a
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Disusun untuk memenuhi Tugas Milestone 2 - IF3110 Pengembangan Aplikasi Berbasis Web
 
-Currently, two official plugins are available:
+## Daftar Isi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Deskripsi Aplikasi _Web_](#deskripsi-aplikasi-web)
+- [Fungsional _Aplikasi_](#skema-basis-data)
+- [Screenshot _Aplikasi_](#screenshpt-aplikasi)
+- [Pembagian Tugas](#pembagian-tugas)
+- [Anggota Kelompok](#anggota-kelompok)
 
-## Expanding the ESLint configuration
+## Deskripsi Aplikasi _Web_
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+**Baca.a** adalah sebuah aplikasi web yang sederhana pada saat ini aplikasi ini memungkinkan author untuk melakukan accept terhadap subscriber selain itu bisa juga untuk menambahkan buku. Baca.a juga memiliki fitur playlist premium yang dimanfaatkan agar author dapat mendapatkan keuntungan. Repository ini merupakan bagian frontend dari website
 
-- Configure the top-level `parserOptions` property like this:
+# Fungsional Aplikasi
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+1. Login
+2. Register
+3. Home
+4. Buku
+5. Playlist
+6. Subscriber
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# Screenshot Aplikasi
+
+### Page login
+
+### Page Register
+
+### Page Home
+
+### Page Detail Buku
+
+### Page Playlist
+
+### Page Subscribers
+
+# Pembagian Tugas
+
+1. Frontend Login : 13521115
+2. Frontend Register : 13521115
+3. Frontend Home : 13521115
+
+# Angota Kelompok
+
+1. Muhamad Aji Wibisoni: 13521095
+2. Shelma Salsabila: 13521115
+3. Marcel Ryan Anthony : 13521127
