@@ -42,9 +42,15 @@
 1. Frontend Login : 13521115
 2. Frontend Register : 13521115
 3. Frontend Home : 13521115
+4. Frontend-Backend Playlist : 13521127
+5. Frontend-Backend Booklist : 13521127
+6. Frontend-Backend PlaylistDetails : 13521127
+7. Frontend Subscriber : 13521127
+8. Backend Subscriber : 13521127, 13521095 
+9. Backend Authentication (Login, Register) : 13521095
 
 # Angota Kelompok
 
-1. Muhamad Aji Wibisoni: 13521095
+1. Muhamad Aji Wibisono: 13521095
 2. Shelma Salsabila: 13521115
-3. Marcel Ryan Anthony : 13521127
+3. Marcel Ryan Antony : 13521127
