@@ -91,8 +91,28 @@ export default function Register() {
           })
       });
       
-      if (!response.ok) {
-          console.error(`API request failed with status: ${response.status}`);
+      const contents: ServerResponse = await response.json();
+      console.log(contents);
+      if (!contents.valid) {
+        console.log("Failed");
+        if(!contents.valid){
+          if(contents.data.error.nameError){
+            setFullnameError(contents.data.error.nameError);
+          } else{
+            setFullnameError(contents.message);
+          }
+          if(contents.data.error.passwordError){
+            setPasswordError(contents.data.error.passwordError)
+          }
+          if(contents.data.error.usernameError){
+            setUsernameError(contents.data.error.nameError);
+          }
+          if(contents.data.error.emailError){
+            setEmailError(contents.data.error.emailError);
+          }
+          return;
+        }
+        return;
       }
 
 
@@ -103,7 +123,21 @@ export default function Register() {
             navigate('/login');
           } else{
             console.log("Failed");
-            // TODO: Add interactive errors
+            if(!contents.valid){
+              if(contents.data.error.nameError){
+                setFullnameError(contents.data.error.nameError);
+              }
+              if(contents.data.error.passwordError){
+                setPasswordError(contents.data.error.passwordError)
+              }
+              if(contents.data.error.usernameError){
+                setUsernameError(contents.data.error.nameError);
+              }
+              if(contents.data.error.emailError){
+                setEmailError(contents.data.error.emailError);
+              }
+              return;
+            }
           }
       } else {
           console.error(`Unexpected content type: ${contentType}`);
@@ -189,7 +223,7 @@ export default function Register() {
               bg="white"
               placeholder="Masukkan fullname"
             />
-            {fullnameError && <Text color="gray">{usernameError}</Text>}
+            {fullnameError && <Text color="gray">{fullnameError}</Text>}
           </FormControl>
           <Button
             colorScheme="yellow"
