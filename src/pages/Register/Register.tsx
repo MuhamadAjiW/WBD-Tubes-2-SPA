@@ -126,6 +126,8 @@ export default function Register() {
             if(!contents.valid){
               if(contents.data.error.nameError){
                 setFullnameError(contents.data.error.nameError);
+              } else{
+                setFullnameError(contents.message);
               }
               if(contents.data.error.passwordError){
                 setPasswordError(contents.data.error.passwordError)

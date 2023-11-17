@@ -84,7 +84,7 @@ const PlaylistDetails = () => {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
       }
@@ -135,7 +135,7 @@ const PlaylistDetails = () => {
       const response = await fetch(`${REST_API_URL}/playlists/${id}/books`, {
         method: "POST",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -188,7 +188,7 @@ const PlaylistDetails = () => {
       const response = await fetch(`${REST_API_URL}/playlists/${id}/books`, {
         method: "DELETE",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),

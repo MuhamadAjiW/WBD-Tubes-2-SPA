@@ -115,7 +115,7 @@ const Playlist = () => {
       }
       setAuthorId(result.data);
 
-      fetchPlaylist(result.data).then((authorsPlaylist) => {
+      fetchPlaylist(result.data, cookies.token).then((authorsPlaylist) => {
         console.log(authorsPlaylist);
         if (authorsPlaylist.valid) {
           setPlaylistData(authorsPlaylist.data);
@@ -144,7 +144,7 @@ const Playlist = () => {
       const response = await fetch(`${REST_API_URL}/playlists`, {
         method: "POST",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -176,7 +176,7 @@ const Playlist = () => {
         {
           method: "DELETE",
           headers: {
-            Authorization: token ?? "Bearer " + token,
+            ...(token && {"Authorization": `Bearer ${token}`}),
           },
         }
       );
@@ -217,7 +217,7 @@ const Playlist = () => {
         {
           method: "PATCH",
           headers: {
-            Authorization: token ?? "Bearer " + token,
+            ...(token && {"Authorization": `Bearer ${token}`}),
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),

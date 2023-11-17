@@ -163,7 +163,7 @@ export default function WithSubnavigation() {
     },
     {
       label: "Subscriber",
-      href: "subscribers",
+      href: "/subscribers",
       onClick: () => {
         handleSideItemClick("Subscriber");
       },

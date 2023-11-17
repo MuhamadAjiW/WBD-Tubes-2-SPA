@@ -127,7 +127,7 @@ const BookList = () => {
       }
       setAuthorId(result.data);
 
-      fetchBookP(result.data).then((authorBooks) => {
+      fetchBookP(result.data, cookies.token).then((authorBooks) => {
         console.log(authorBooks);
         if (authorBooks.valid) {
           setBookPData(authorBooks.data)
@@ -146,7 +146,7 @@ const BookList = () => {
       const response = await fetch(`${REST_API_URL}/books/${bookp_id}`, {
         method: "DELETE",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
         },
       });
 
@@ -223,7 +223,7 @@ const BookList = () => {
       const response = await fetch(`${REST_API_URL}/books`, {
         method: "POST",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -279,7 +279,7 @@ const BookList = () => {
         {
           method: "PATCH",
           headers: {
-            Authorization: token ?? "Bearer " + token,
+            ...(token && {"Authorization": `Bearer ${token}`}),
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),

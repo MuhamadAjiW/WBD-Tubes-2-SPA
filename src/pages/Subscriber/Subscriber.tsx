@@ -103,7 +103,7 @@ const Subscriber = () => {
       {
         method: "DELETE",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -137,7 +137,7 @@ const Subscriber = () => {
       {
         method: "PATCH",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -170,7 +170,7 @@ const Subscriber = () => {
       {
         method: "PATCH",
         headers: {
-          Authorization: token ?? "Bearer " + token,
+          ...(token && {"Authorization": `Bearer ${token}`}),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
